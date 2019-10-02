@@ -28,8 +28,12 @@
             type="pcm.dataprocessing.analysis.launcher.config">
          <launchMode
                label="label"
-               mode="run">
+               mode="run"
+               perspective="org.eclipse.debug.ui.DebugPerspective">
          </launchMode>
       </launchConfigurationTabGroup>
    </extension>
+     
+   
+  
 </plugin>

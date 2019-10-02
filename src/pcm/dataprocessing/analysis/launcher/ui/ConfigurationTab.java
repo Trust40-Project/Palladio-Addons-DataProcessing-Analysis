@@ -1,48 +1,46 @@
 package pcm.dataprocessing.analysis.launcher.ui;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
-
 import pcm.dataprocessing.analysis.launcher.constants.Constants;
+import de.uka.ipd.sdq.workflow.launchconfig.tabs.TabHelper;
 
 /**
- * Main Tab for the launch configuration
+ * Main configuration tab for the launch configuration
  * 
- * @author mirko
+ * @author Mirko Sowa
  *
  */
 public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 
 	private Composite comp;
 
-	private Group usageGroup;
-	private Group allocGroup;
-	private Group chGroup;
-	private Group analysisGroup;
-	private Group prologGroup;
-
 	private Text usageText;
 	private Text allocText;
 	private Text chText;
 
+	
 	private Combo prologCombo;
 	private Combo analysisCombo;
 
-	private Button usageBrowseBtn;
-	private Button allocBrowseBtn;
-	private Button chBrowseBtn;
+	private Group analysisGroup;
+	private Group prologGroup;
+
+	public ConfigurationTab() {
+
+	}
 
 	@Override
 	public String getName() {
@@ -56,15 +54,13 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 
 	@Override
 	public boolean isValid(final ILaunchConfiguration launchConfig) {
-
-		try {
-			// TODO check if filetype is valid and all required fields are not empty
-
-		} catch (Exception e) {
-			setErrorMessage("Invalid file selected.");
-		}
-
 		return true;
+
+	}
+
+	@Override
+	public boolean canSave() {
+		return !usageText.getText().isEmpty() && !allocText.getText().isEmpty() && !chText.getText().isEmpty();
 	}
 
 	@Override
@@ -72,8 +68,8 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 		configuration.setAttribute(Constants.USAGE_MODEL_LABEL.getConstant(), "");
 		configuration.setAttribute(Constants.ALLOCATION_MODEL_LABEL.getConstant(), "");
 		configuration.setAttribute(Constants.CHARACTERISTICS_MODEL_LABEL.getConstant(), "");
-		configuration.setAttribute(Constants.ANALYSIS_GOAL_LABEL.getConstant(), "");
-		configuration.setAttribute(Constants.PROLOG_INTERPRETER_LABEL.getConstant(), "");
+		configuration.setAttribute(Constants.ANALYSIS_GOAL_LABEL.getConstant(), 0);
+		configuration.setAttribute(Constants.PROLOG_INTERPRETER_LABEL.getConstant(), 0);
 	}
 
 	@Override
@@ -83,8 +79,16 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 		chText.setText("");
 		prologCombo.select(0);
 		analysisCombo.select(0);
+		try {
+			usageText.setText(configuration.getAttribute(Constants.USAGE_MODEL_LABEL.getConstant(), ""));
+			allocText.setText(configuration.getAttribute(Constants.ALLOCATION_MODEL_LABEL.getConstant(), ""));
+			chText.setText(configuration.getAttribute(Constants.CHARACTERISTICS_MODEL_LABEL.getConstant(), ""));
+			analysisCombo.select(configuration.getAttribute(Constants.ANALYSIS_GOAL_LABEL.getConstant(), 0));
+			prologCombo.select(configuration.getAttribute(Constants.PROLOG_INTERPRETER_LABEL.getConstant(), 0));
 
-		// TODO initialise with config attributes
+		} catch (CoreException e) {
+			// ignored
+		}
 
 	}
 
@@ -93,98 +97,46 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 		configuration.setAttribute(Constants.USAGE_MODEL_LABEL.getConstant(), usageText.getText());
 		configuration.setAttribute(Constants.ALLOCATION_MODEL_LABEL.getConstant(), allocText.getText());
 		configuration.setAttribute(Constants.CHARACTERISTICS_MODEL_LABEL.getConstant(), chText.getText());
+		configuration.setAttribute(Constants.ANALYSIS_GOAL_LABEL.getConstant(), analysisCombo.getSelectionIndex());
+		configuration.setAttribute(Constants.PROLOG_INTERPRETER_LABEL.getConstant(), prologCombo.getSelectionIndex());
 	}
 
 	@Override
 	public void createControl(Composite parent) {
 
+		final ModifyListener modifyListener = new ModifyListener() {
+
+			public void modifyText(ModifyEvent e) {
+			//	ConfigurationTab.this.setDirty(true);
+			//	ConfigurationTab.this.updateLaunchConfigurationDialog();
+			}
+		};
+
+	
 		comp = new Composite(parent, SWT.NONE);
 		comp.setLayout(new GridLayout(1, false));
 
 		/* Usage Model */
-
-		usageGroup = new Group(comp, SWT.NONE);
-		usageGroup.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		usageGroup.setText(Constants.USAGE_MODEL_LABEL.getConstant());
-		usageGroup.setLayout(new GridLayout(2, false));
-
-		usageText = new Text(usageGroup, SWT.BORDER);
+		
+		usageText = new Text(comp, SWT.BORDER);
 		usageText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-
-		usageBrowseBtn = new Button(usageGroup, SWT.NONE);
-		usageBrowseBtn.setText(Constants.BUTTON_BROWSE_TEXT.getConstant());
-		usageBrowseBtn.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(final SelectionEvent e) {
-
-				FileDialog dlg = new FileDialog(parent.getShell(), SWT.OPEN);
-				dlg.setFilterNames(new String[] { "Encore Model (*.ecore)" });
-
-				dlg.setFilterExtensions(new String[] { "*.ecore" });
-				String fileName = dlg.open();
-				if (fileName != null) {
-					usageText.setText(fileName);
-				}
-
-			}
-		});
+		TabHelper.createFileInputSection(comp, modifyListener, Constants.USAGE_MODEL_LABEL.getConstant(),
+				new String[] { "*.usagemodel" }, usageText, Display.getCurrent().getActiveShell(), "");
 
 		/* Allocation-Model */
-
-		allocGroup = new Group(comp, SWT.NONE);
-		allocGroup.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		allocGroup.setText(Constants.ALLOCATION_MODEL_LABEL.getConstant());
-		allocGroup.setLayout(new GridLayout(2, false));
-
-		allocText = new Text(allocGroup, SWT.BORDER);
+		
+		allocText = new Text(comp, SWT.BORDER);
 		allocText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-
-		allocBrowseBtn = new Button(allocGroup, SWT.NONE);
-		allocBrowseBtn.setText(Constants.BUTTON_BROWSE_TEXT.getConstant());
-		allocBrowseBtn.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(final SelectionEvent e) {
-
-				FileDialog dlg = new FileDialog(parent.getShell(), SWT.OPEN);
-				dlg.setFilterNames(new String[] { "Encore Model (*.ecore)" });
-
-				dlg.setFilterExtensions(new String[] { "*.ecore" });
-				String fileName = dlg.open();
-				if (fileName != null) {
-					allocText.setText(fileName);
-				}
-
-			}
-		});
+		TabHelper.createFileInputSection(comp, modifyListener, Constants.ALLOCATION_MODEL_LABEL.getConstant(),
+				new String[] { "*.allocation" }, allocText, Display.getCurrent().getActiveShell(), "");
 
 		/* Characteristics-Type-Model */
-
-		chGroup = new Group(comp, SWT.NONE);
-		chGroup.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		chGroup.setText(Constants.CHARACTERISTICS_MODEL_LABEL.getConstant());
-		chGroup.setLayout(new GridLayout(2, false));
-
-		chText = new Text(chGroup, SWT.BORDER);
+	
+		chText = new Text(comp, SWT.BORDER);
 		chText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-
-		chBrowseBtn = new Button(chGroup, SWT.NONE);
-		chBrowseBtn.setText(Constants.BUTTON_BROWSE_TEXT.getConstant());
-		chBrowseBtn.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(final SelectionEvent e) {
-
-				FileDialog dlg = new FileDialog(parent.getShell(), SWT.OPEN);
-				dlg.setFilterNames(new String[] { "Encore Model (*.ecore)" });
-
-				dlg.setFilterExtensions(new String[] { "*.ecore" });
-				String fileName = dlg.open();
-				if (fileName != null) {
-					chText.setText(fileName);
-				}
-
-			}
-		});
-
+		TabHelper.createFileInputSection(comp, modifyListener, Constants.CHARACTERISTICS_MODEL_LABEL.getConstant(),
+				new String[] { "*.xmi" }, chText, Display.getCurrent().getActiveShell(), "");
+		
 		/* Analysis Goal */
 
 		analysisGroup = new Group(comp, SWT.NONE);
@@ -198,6 +150,7 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 		analysisCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
 		/* Prolog Interpreter */
+		
 		prologGroup = new Group(comp, SWT.NONE);
 		prologGroup.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		prologGroup.setText(Constants.PROLOG_INTERPRETER_LABEL.getConstant());
@@ -208,6 +161,7 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 		prologCombo.add(Constants.PROLOG_INTERPRETER_TWO.getConstant());
 		prologCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
+		
 		setControl(comp);
 
 	}

@@ -8,6 +8,7 @@ public enum Constants {
 
 	NAME("Trust 4.0 Modelling Launcher"),
 	BUTTON_BROWSE_TEXT("Browse..."),
+	BUTTON_DIR_BROWSE_TEXT("Working Directory..."),
 	ANALYSIS_GOAL_LABEL("Select Analysis Goal"),
 	ANALYSIS_GOAL_ONE("ONE"),
 	ANALYSIS_GOAL_TWO("TWO"),

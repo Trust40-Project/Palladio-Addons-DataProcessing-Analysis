@@ -10,7 +10,7 @@ import org.eclipse.debug.ui.ILaunchConfigurationTab;
 
 /**
  * Parent Group of the tab configuration.
- * @author Mirk Sowa
+ * @author Mirko Sowa
  *
  */
 public class LaunchConfigurationTabGroup extends AbstractLaunchConfigurationTabGroup {
