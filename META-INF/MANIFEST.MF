@@ -1,5 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
+Bundle-ActivationPolicy: lazy
 Bundle-Name: Launcher
 Bundle-SymbolicName: pcm.dataprocessing.analysis.launcher;singleton:=true
 Bundle-Version: 0.0.0
@@ -17,7 +18,14 @@ Require-Bundle: org.eclipse.debug.core,
  org.palladiosimulator.pcm.resources;bundle-version="4.0.0";visibility:=reexport,
  org.palladiosimulator.commons;bundle-version="1.0.1";visibility:=reexport,
  org.palladiosimulator.pcm.dataprocessing.prolog;bundle-version="0.1.0",
- de.uka.ipd.sdq.workflow.launchconfig
+ de.uka.ipd.sdq.workflow.launchconfig,
+ com.google.guava,
+ org.eclipse.xtext.xbase.lib,
+ org.eclipse.xtend.lib,
+ org.eclipse.xtend.lib.macro,
+ org.palladiosimulator.pcm.dataprocessing.prolog.transformation,
+ prolog4j-tuprolog,
+ prolog4j-api
 Export-Package: pcm.dataprocessing.analysis.launcher.constants,
  pcm.dataprocessing.analysis.launcher.delegate,
  pcm.dataprocessing.analysis.launcher.ui

@@ -15,11 +15,10 @@ public class Activator extends AbstractUIPlugin {
 	public static final String PLUGIN_ID = "testDiscovery"; //$NON-NLS-1$
 
 	// The shared instance
-	private static Activator plugin;
+	private static Activator instance;
 
-	private ServiceReference<IProverManager> proverManagerReference;
 	private IProverManager proverManager;
-	
+
 	/**
 	 * The constructor
 	 */
@@ -29,19 +28,22 @@ public class Activator extends AbstractUIPlugin {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		plugin = this;
-		
-		proverManagerReference = context.getServiceReference(IProverManager.class);
+		setInstance(this);
+
+		ServiceReference<IProverManager> proverManagerReference = context.getServiceReference(IProverManager.class);
 		proverManager = context.getService(proverManagerReference);
 	}
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
-		proverManager = null;
-		context.ungetService(proverManagerReference);
-		
-		plugin = null;
+		setInstance(null);
 		super.stop(context);
+	}
+	
+	
+
+	private static void setInstance(Activator instance) {
+		Activator.instance = instance;
 	}
 
 	/**
@@ -49,11 +51,12 @@ public class Activator extends AbstractUIPlugin {
 	 *
 	 * @return the shared instance
 	 */
-	public static Activator getDefault() {
-		return plugin;
+	
+	public static Activator getInstance() {
+		return Activator.instance;
 	}
 
-	public IProverManager getProverManager() {
+	public IProverManager getProverManagerInstance() {
 		return proverManager;
 	}
 
