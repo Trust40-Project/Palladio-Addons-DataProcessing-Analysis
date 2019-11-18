@@ -25,12 +25,5 @@ public enum QueryInput {
 		return name;
 	}
 	
-	public String getQueryByName(String searching) {
-		for(QueryInput a : this.values()) {
-			if(this.name.equals(searching)) {
-				return this.query;
-			}
-		}
-		return "";
-	}
+	
 }
