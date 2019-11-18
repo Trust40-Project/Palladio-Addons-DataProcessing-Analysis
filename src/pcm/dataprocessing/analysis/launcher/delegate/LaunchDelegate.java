@@ -47,18 +47,39 @@ import pcm.dataprocessing.analysis.launcher.constants.QueryInput;
  */
 public class LaunchDelegate implements ILaunchConfigurationDelegate {
 
+	private URI usageModelPath = null;
+	private URI allocModelPath = null;
+	private URI chModelPath = null;
+
+	private UsageModel usageModel = null;
+	private Allocation allocationModel = null;
+	private CharacteristicTypeContainer charTypeContainer = null;
+
 	public LaunchDelegate() {
 	}
 
 	@Override
 	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor)
-			throws CoreException { //TODO refractor: shorten method length.
+			throws CoreException {
 
 		IProfileRegistry.eINSTANCE.getClass();
 
-		URI usageModelPath = null;
-		URI allocModelPath = null;
-		URI chModelPath = null;
+		this.resolvePaths(configuration);
+
+		this.setupModels();
+
+		org.palladiosimulator.pcm.dataprocessing.prolog.prologmodel.System dataFlowSystemModel = convertToSystemModel();
+		
+		SystemTranslator sysTranslator = getTranslator(configuration);
+		
+		this.translate(configuration, sysTranslator, dataFlowSystemModel);
+
+		
+
+	}
+
+	private void resolvePaths(ILaunchConfiguration configuration) throws CoreException {
+
 		try {
 			usageModelPath = getUriFromText(configuration.getAttribute(Constants.USAGE_MODEL_LABEL.getConstant(), ""));
 			allocModelPath = getUriFromText(
@@ -66,86 +87,120 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 			chModelPath = getUriFromText(
 					configuration.getAttribute(Constants.CHARACTERISTICS_MODEL_LABEL.getConstant(), ""));
 		} catch (MalformedURLException e) {
-			// keine
+			// TODO build dialog
+			e.printStackTrace();
 		}
 
-		if (usageModelPath != null && allocModelPath != null && chModelPath != null) {
+	}
 
+	/**
+	 * 
+	 */
+	private void setupModels() {
+		if (usageModelPath != null && allocModelPath != null && chModelPath != null) {
 			ResourceSet rs = new ResourceSetImpl();
 
-			UsageModel usageModel = (UsageModel) rs.getResource(usageModelPath, true).getContents().get(0);
+			// TODO is das noch hardcoded?
 
-			Allocation allocationModel = (Allocation) rs.getResource(allocModelPath, true).getContents().get(0);
-
-			CharacteristicTypeContainer characteristicTypeContainer = (CharacteristicTypeContainer) rs
-					.getResource(chModelPath, true).getContents().get(0);
+			usageModel = (UsageModel) rs.getResource(usageModelPath, true).getContents().get(0);
+			allocationModel = (Allocation) rs.getResource(allocModelPath, true).getContents().get(0);
+			charTypeContainer = (CharacteristicTypeContainer) rs.getResource(chModelPath, true).getContents().get(0);
 
 			EcoreUtil.resolveAll(rs);
 
-			IReturnValueAssignmentGeneratorRegistry registry = new IReturnValueAssignmentGeneratorRegistry() {
-				@Override
-				public Iterable<IReturnValueAssignmentGenerator> getGenerators() {
-					Collection<IReturnValueAssignmentGenerator> generators = new ArrayList<>();
-					generators.add(new DefaultReturnValueAssignmentGenerator());
-					generators.add(new UserDefinedReturnValueAssignmentsGenerator());
-
-					return generators;
-				}
-			};
-
-			TransformatorFactoryImpl transformFactory = new TransformatorFactoryImpl();
-			ITransformator myTransformator = transformFactory.create(registry, null);
-
-			org.palladiosimulator.pcm.dataprocessing.prolog.prologmodel.System dataFlowSystemModel = myTransformator
-					.transform(usageModel, allocationModel, characteristicTypeContainer);
-
-			Configuration noOptimizationConfiguration = new Configuration();
-			noOptimizationConfiguration.setArgumentAndReturnValueIndexing(false);
-			noOptimizationConfiguration.setOptimizedNegations(false);
-			noOptimizationConfiguration.setShorterAssignments(false);
-
-			SystemTranslator sysTranslator = new SystemTranslator(noOptimizationConfiguration);
-
-			String testingCode = sysTranslator.translate(dataFlowSystemModel).getCode();
-
-			// get the Prover
-			
-			IProverManager proverManager = Activator.getInstance().getProverManagerInstance();		
-			IProverFactory proverFactory = null;
-			
-			String analysisConfig = configuration.getAttribute(Constants.ANALYSIS_GOAL_LABEL.getConstant(), "default");
-			
-			//TODO remove hardcoded
-			
-			if(!analysisConfig.equals("default")) {
-				for(Map.Entry<ProverInformation, IProverFactory> entry : proverManager.getProvers().entrySet()) {
-					if(entry.getKey().getId().equals(analysisConfig)) {
-						proverFactory = entry.getValue();
-					}
-				}
-			}else {
-				//TODO find suitable standard factory
-				proverFactory = new TuPrologProverFactory();
-			}
-						
-			Prover myProver = proverFactory.createProver();
-			
-			myProver.addTheory(testingCode);
-			
-			String queryToApply = "";
-			String prologConfig = configuration.getAttribute(Constants.PROLOG_INTERPRETER_LABEL.getConstant(), "");
-				for(QueryInput a : QueryInput.values()) {
-					if(a.getName().equals(prologConfig)) {
-						queryToApply = a.getQuery();
-					}
-				}
-				
-			org.prolog4j.Query query = myProver.query(queryToApply);
-			
 		} else {
-			// at least one path is null
+			// TODO Dialog, path not resolved
+			// stop process
 		}
 
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	private org.palladiosimulator.pcm.dataprocessing.prolog.prologmodel.System convertToSystemModel() {
+		if(usageModel != null &&  allocationModel != null && charTypeContainer != null) {
+		IReturnValueAssignmentGeneratorRegistry registry = new IReturnValueAssignmentGeneratorRegistry() {
+			@Override
+			public Iterable<IReturnValueAssignmentGenerator> getGenerators() {
+				Collection<IReturnValueAssignmentGenerator> generators = new ArrayList<>();
+				generators.add(new DefaultReturnValueAssignmentGenerator());
+				generators.add(new UserDefinedReturnValueAssignmentsGenerator());
+
+				return generators;
+			}
+		};
+
+		TransformatorFactoryImpl transformFactory = new TransformatorFactoryImpl();
+		ITransformator myTransformator = transformFactory.create(registry, null);
+
+		return myTransformator.transform(usageModel, allocationModel, charTypeContainer);
+		} else {
+			//TODO stop
+			return null;
+		}
+	}
+
+	/**
+	 * 
+	 * @param configuration
+	 * @return
+	 * @throws CoreException
+	 */
+	private SystemTranslator getTranslator(ILaunchConfiguration launchConfig) throws CoreException {
+
+		// TODO add to Configuration to LaunchConfig and get the config here
+		Configuration noOptimizationConfiguration = new Configuration();
+		noOptimizationConfiguration.setArgumentAndReturnValueIndexing(false);
+		noOptimizationConfiguration.setOptimizedNegations(false);
+		noOptimizationConfiguration.setShorterAssignments(false);
+
+		return new SystemTranslator(noOptimizationConfiguration);
+	}
+
+	/**
+	 * 
+	 * @param sysTranslator
+	 * @throws CoreException
+	 */
+	private void translate(ILaunchConfiguration launchConfig, SystemTranslator sysTranslator,
+			org.palladiosimulator.pcm.dataprocessing.prolog.prologmodel.System dataFlowSystemModel)
+			throws CoreException {
+
+		String testingCode = sysTranslator.translate(dataFlowSystemModel).getCode();
+
+		IProverManager proverManager = Activator.getInstance().getProverManagerInstance();
+		IProverFactory proverFactory = null;
+
+		String analysisConfig = launchConfig.getAttribute(Constants.ANALYSIS_GOAL_LABEL.getConstant(), "default");
+
+		// TODO remove hardcoded
+
+		if (!analysisConfig.equals("default")) {
+			for (Map.Entry<ProverInformation, IProverFactory> entry : proverManager.getProvers().entrySet()) {
+				if (entry.getKey().getId().equals(analysisConfig)) {
+					proverFactory = entry.getValue();
+				}
+			}
+		} else {
+			// TODO find suitable standard factory
+			proverFactory = new TuPrologProverFactory();
+		}
+
+		Prover myProver = proverFactory.createProver();
+
+		myProver.addTheory(testingCode);
+
+		String queryToApply = "";
+		String prologConfig = launchConfig.getAttribute(Constants.PROLOG_INTERPRETER_LABEL.getConstant(), "");
+		for (QueryInput a : QueryInput.values()) {
+			if (a.getName().equals(prologConfig)) {
+				queryToApply = a.getQuery();
+			}
+		}
+
+		org.prolog4j.Query query = myProver.query(queryToApply);
 	}
 
 	private URI getUriFromText(String text) throws MalformedURLException {
