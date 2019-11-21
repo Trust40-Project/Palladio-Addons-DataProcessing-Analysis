@@ -10,15 +10,14 @@ public enum Constants {
 	BUTTON_BROWSE_TEXT("Browse..."),
 	BUTTON_DIR_BROWSE_TEXT("Working Directory..."),
 	ANALYSIS_GOAL_LABEL("Select Analysis Goal"),
-	ANALYSIS_GOAL_ONE("ONE"),
-	ANALYSIS_GOAL_TWO("TWO"),
 	PROLOG_INTERPRETER_LABEL("Select PROLOG Interpreter"),
-	PROLOG_INTERPRETER_ONE("ONE"),
-	PROLOG_INTERPRETER_TWO("TWO"),
 	USAGE_MODEL_LABEL("Select Usage Model"),
 	ALLOCATION_MODEL_LABEL("Select Allocation Model"),
-	CHARACTERISTICS_MODEL_LABEL("Select Characteristics Model");
-	final private String attr;
+	CHARACTERISTICS_MODEL_LABEL("Select Characteristics Model"),
+	ADV_ARG_AND_RETURN("Argument and Return Indexing"),
+	ADV_OPTIM_NEGATION("Optimized Negations"),
+	ADV_SHORT_ASSIGN("Short Asssignments");
+	private final String attr;
 
 	Constants(String attr) {
 		this.attr = attr;

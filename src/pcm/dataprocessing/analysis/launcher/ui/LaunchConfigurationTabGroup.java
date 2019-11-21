@@ -1,6 +1,4 @@
-/**
- * 
- */
+
 package pcm.dataprocessing.analysis.launcher.ui;
 
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTabGroup;
@@ -10,6 +8,7 @@ import org.eclipse.debug.ui.ILaunchConfigurationTab;
 
 /**
  * Parent Group of the tab configuration.
+ * 
  * @author Mirko Sowa
  *
  */
@@ -20,7 +19,7 @@ public class LaunchConfigurationTabGroup extends AbstractLaunchConfigurationTabG
 	 */
 	@Override
 	public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
-        setTabs(new ILaunchConfigurationTab[] { new ConfigurationTab(), new CommonTab() });
+		setTabs(new ILaunchConfigurationTab[] { new ConfigurationTab(), new AdvancedConfigurationTab() });
 
 	}
 

@@ -35,7 +35,6 @@ import pcm.dataprocessing.analysis.launcher.delegate.Activator;
 import edu.kit.ipd.sdq.dataflow.systemmodel.SystemTranslator;
 import edu.kit.ipd.sdq.dataflow.systemmodel.configuration.Configuration;
 import pcm.dataprocessing.analysis.launcher.constants.Constants;
-import pcm.dataprocessing.analysis.launcher.constants.QueryInput;
 
 /**
  * Launches a given launch configuration with an usage model, an allocation
@@ -69,12 +68,10 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 		this.setupModels();
 
 		org.palladiosimulator.pcm.dataprocessing.prolog.prologmodel.System dataFlowSystemModel = convertToSystemModel();
-		
-		SystemTranslator sysTranslator = getTranslator(configuration);
-		
-		this.translate(configuration, sysTranslator, dataFlowSystemModel);
 
-		
+		SystemTranslator sysTranslator = getTranslator(configuration);
+
+		this.translate(configuration, sysTranslator, dataFlowSystemModel);
 
 	}
 
@@ -94,7 +91,7 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 	}
 
 	/**
-	 * 
+	 * Gets and resolves the given paths for the respective models.
 	 */
 	private void setupModels() {
 		if (usageModelPath != null && allocModelPath != null && chModelPath != null) {
@@ -116,33 +113,35 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 	}
 
 	/**
+	 * Converts the given models to a compound system model, which is returned.
 	 * 
-	 * @return
+	 * @return the system model
 	 */
 	private org.palladiosimulator.pcm.dataprocessing.prolog.prologmodel.System convertToSystemModel() {
-		if(usageModel != null &&  allocationModel != null && charTypeContainer != null) {
-		IReturnValueAssignmentGeneratorRegistry registry = new IReturnValueAssignmentGeneratorRegistry() {
-			@Override
-			public Iterable<IReturnValueAssignmentGenerator> getGenerators() {
-				Collection<IReturnValueAssignmentGenerator> generators = new ArrayList<>();
-				generators.add(new DefaultReturnValueAssignmentGenerator());
-				generators.add(new UserDefinedReturnValueAssignmentsGenerator());
+		if (usageModel != null && allocationModel != null && charTypeContainer != null) {
+			IReturnValueAssignmentGeneratorRegistry registry = new IReturnValueAssignmentGeneratorRegistry() {
+				@Override
+				public Iterable<IReturnValueAssignmentGenerator> getGenerators() {
+					Collection<IReturnValueAssignmentGenerator> generators = new ArrayList<>();
+					generators.add(new DefaultReturnValueAssignmentGenerator());
+					generators.add(new UserDefinedReturnValueAssignmentsGenerator());
 
-				return generators;
-			}
-		};
+					return generators;
+				}
+			};
 
-		TransformatorFactoryImpl transformFactory = new TransformatorFactoryImpl();
-		ITransformator myTransformator = transformFactory.create(registry, null);
+			TransformatorFactoryImpl transformFactory = new TransformatorFactoryImpl();
+			ITransformator myTransformator = transformFactory.create(registry, null);
 
-		return myTransformator.transform(usageModel, allocationModel, charTypeContainer);
+			return myTransformator.transform(usageModel, allocationModel, charTypeContainer);
 		} else {
-			//TODO stop
+			// TODO stop
 			return null;
 		}
 	}
 
 	/**
+	 * Gets a system translator with parameters specified in the launch configuration.
 	 * 
 	 * @param configuration
 	 * @return
@@ -160,6 +159,7 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 	}
 
 	/**
+	 * Translates the system model with a system translator and gets the analysis goal.
 	 * 
 	 * @param sysTranslator
 	 * @throws CoreException
@@ -173,35 +173,33 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 		IProverManager proverManager = Activator.getInstance().getProverManagerInstance();
 		IProverFactory proverFactory = null;
 
-		String analysisConfig = launchConfig.getAttribute(Constants.ANALYSIS_GOAL_LABEL.getConstant(), "default");
+		String prologConfig = launchConfig.getAttribute(Constants.PROLOG_INTERPRETER_LABEL.getConstant(), "default");
 
 		// TODO remove hardcoded
 
-		if (!analysisConfig.equals("default")) {
+		if (!prologConfig.equals("default")) {
 			for (Map.Entry<ProverInformation, IProverFactory> entry : proverManager.getProvers().entrySet()) {
-				if (entry.getKey().getId().equals(analysisConfig)) {
+				if (entry.getKey().getId().equals(prologConfig)) {
 					proverFactory = entry.getValue();
 				}
 			}
 		} else {
 			// TODO find suitable standard factory
-			proverFactory = new TuPrologProverFactory();
+			// proverFactory = new TuPrologProverFactory();
 		}
 
 		Prover myProver = proverFactory.createProver();
 
 		myProver.addTheory(testingCode);
 
-		String queryToApply = "";
-		String prologConfig = launchConfig.getAttribute(Constants.PROLOG_INTERPRETER_LABEL.getConstant(), "");
-		for (QueryInput a : QueryInput.values()) {
-			if (a.getName().equals(prologConfig)) {
-				queryToApply = a.getQuery();
-			}
-		}
+		String queryToApply = ".";
+
+		// TODO get Query to apply
 
 		org.prolog4j.Query query = myProver.query(queryToApply);
 	}
+	
+
 
 	private URI getUriFromText(String text) throws MalformedURLException {
 

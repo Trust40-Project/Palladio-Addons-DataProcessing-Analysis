@@ -6,6 +6,8 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.prolog4j.manager.IProverManager;
 
+import pcm.dataprocessing.analysis.launcher.query.IQueryManager;
+
 /**
  * The activator class controls the plug-in life cycle
  */
@@ -18,6 +20,7 @@ public class Activator extends AbstractUIPlugin {
 	private static Activator instance;
 
 	private IProverManager proverManager;
+	private IQueryManager queryManager;
 
 	/**
 	 * The constructor
@@ -31,7 +34,10 @@ public class Activator extends AbstractUIPlugin {
 		setInstance(this);
 
 		ServiceReference<IProverManager> proverManagerReference = context.getServiceReference(IProverManager.class);
+		ServiceReference<IQueryManager> queryManagerReference = context.getServiceReference(IQueryManager.class);
+		// -> error
 		proverManager = context.getService(proverManagerReference);
+		queryManager = context.getService(queryManagerReference);
 	}
 
 	@Override
@@ -58,6 +64,10 @@ public class Activator extends AbstractUIPlugin {
 
 	public IProverManager getProverManagerInstance() {
 		return proverManager;
+	}
+	
+	public IQueryManager getQueryMangerInstance() {
+		return queryManager;
 	}
 
 }
