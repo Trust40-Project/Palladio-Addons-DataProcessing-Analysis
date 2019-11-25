@@ -141,7 +141,8 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 	}
 
 	/**
-	 * Gets a system translator with parameters specified in the launch configuration.
+	 * Gets a system translator with parameters specified in the launch
+	 * configuration.
 	 * 
 	 * @param configuration
 	 * @return
@@ -149,17 +150,26 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 	 */
 	private SystemTranslator getTranslator(ILaunchConfiguration launchConfig) throws CoreException {
 
-		// TODO add to Configuration to LaunchConfig and get the config here
 		Configuration noOptimizationConfiguration = new Configuration();
-		noOptimizationConfiguration.setArgumentAndReturnValueIndexing(false);
-		noOptimizationConfiguration.setOptimizedNegations(false);
-		noOptimizationConfiguration.setShorterAssignments(false);
+
+		boolean shortAssign = false;
+		boolean optimNegation = false;
+		boolean returnValueIndexing = false;
+
+		returnValueIndexing = launchConfig.getAttribute(Constants.ADV_ARG_AND_RETURN.getConstant(), false);
+		optimNegation = launchConfig.getAttribute(Constants.ADV_OPTIM_NEGATION.getConstant(), false);
+		shortAssign = launchConfig.getAttribute(Constants.ADV_SHORT_ASSIGN.getConstant(), false);
+
+		noOptimizationConfiguration.setArgumentAndReturnValueIndexing(returnValueIndexing);
+		noOptimizationConfiguration.setOptimizedNegations(optimNegation);
+		noOptimizationConfiguration.setShorterAssignments(shortAssign);
 
 		return new SystemTranslator(noOptimizationConfiguration);
 	}
 
 	/**
-	 * Translates the system model with a system translator and gets the analysis goal.
+	 * Translates the system model with a system translator and gets the analysis
+	 * goal.
 	 * 
 	 * @param sysTranslator
 	 * @throws CoreException
@@ -174,8 +184,6 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 		IProverFactory proverFactory = null;
 
 		String prologConfig = launchConfig.getAttribute(Constants.PROLOG_INTERPRETER_LABEL.getConstant(), "default");
-
-		// TODO remove hardcoded
 
 		if (!prologConfig.equals("default")) {
 			for (Map.Entry<ProverInformation, IProverFactory> entry : proverManager.getProvers().entrySet()) {
@@ -198,8 +206,6 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 
 		org.prolog4j.Query query = myProver.query(queryToApply);
 	}
-	
-
 
 	private URI getUriFromText(String text) throws MalformedURLException {
 

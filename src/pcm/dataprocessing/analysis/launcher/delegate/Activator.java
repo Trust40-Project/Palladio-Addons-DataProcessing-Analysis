@@ -35,7 +35,7 @@ public class Activator extends AbstractUIPlugin {
 
 		ServiceReference<IProverManager> proverManagerReference = context.getServiceReference(IProverManager.class);
 		ServiceReference<IQueryManager> queryManagerReference = context.getServiceReference(IQueryManager.class);
-		// -> error
+		
 		proverManager = context.getService(proverManagerReference);
 		queryManager = context.getService(queryManagerReference);
 	}

@@ -1,5 +1,9 @@
 package pcm.dataprocessing.analysis.launcher.query;
-
+/**
+ * 
+ * @author Mirko Sowa
+ *
+ */
 public class QueryInformation {
 	private final String name;
 	private final String id;
