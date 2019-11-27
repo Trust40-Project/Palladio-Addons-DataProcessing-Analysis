@@ -32,6 +32,9 @@ import org.prolog4j.Prover;
 import org.prolog4j.ProverInformation;
 
 import pcm.dataprocessing.analysis.launcher.delegate.Activator;
+import pcm.dataprocessing.analysis.launcher.query.IQueryInput;
+import pcm.dataprocessing.analysis.launcher.query.IQueryManager;
+import pcm.dataprocessing.analysis.launcher.query.QueryInformation;
 import edu.kit.ipd.sdq.dataflow.systemmodel.SystemTranslator;
 import edu.kit.ipd.sdq.dataflow.systemmodel.configuration.Configuration;
 import pcm.dataprocessing.analysis.launcher.constants.Constants;
@@ -193,18 +196,31 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 			}
 		} else {
 			// TODO find suitable standard factory
-			// proverFactory = new TuPrologProverFactory();
 		}
 
-		Prover myProver = proverFactory.createProver();
+		// TODO proverfactory can be null.
 
+		Prover myProver = proverFactory.createProver();
 		myProver.addTheory(testingCode);
 
-		String queryToApply = ".";
+		IQueryManager queryManager = Activator.getInstance().getQueryManagerInstance();
+		IQueryInput queryInput = null;
 
-		// TODO get Query to apply
+		String analysisConfig = launchConfig.getAttribute(Constants.ANALYSIS_GOAL_LABEL.getConstant(), "default");
 
-		org.prolog4j.Query query = myProver.query(queryToApply);
+		if (!analysisConfig.equals("default")) {
+			for (Map.Entry<QueryInformation, IQueryInput> entry : queryManager.getQueries().entrySet()) {
+				if (entry.getKey().getId().equals(analysisConfig)) {
+					queryInput = entry.getValue();
+				}
+			}
+		} else {
+			// TODO find standard query
+		}
+
+		// TODO query can be null.
+
+		myProver.query(queryInput.getQuery());
 	}
 
 	private URI getUriFromText(String text) throws MalformedURLException {

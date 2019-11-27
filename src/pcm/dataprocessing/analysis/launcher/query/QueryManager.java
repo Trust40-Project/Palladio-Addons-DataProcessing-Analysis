@@ -29,9 +29,9 @@ public class QueryManager implements IQueryManager {
 
 	@Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC)
 	public void bindQuery(IQueryInput input, Map<String, String> serviceProperties) {
-		String proverId = serviceProperties.get("id");
-		String proverName = serviceProperties.get("name");
-		availableQueries.put(new QueryInformation(proverId, proverName), input);
+		String queryId = serviceProperties.get("id");
+		String queryName = serviceProperties.get("name");
+		availableQueries.put(new QueryInformation(queryId, queryName), input);
 	}
 
 	public void unbindQuery(IQueryInput input) {

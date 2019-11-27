@@ -35,7 +35,7 @@ public class Activator extends AbstractUIPlugin {
 
 		ServiceReference<IProverManager> proverManagerReference = context.getServiceReference(IProverManager.class);
 		ServiceReference<IQueryManager> queryManagerReference = context.getServiceReference(IQueryManager.class);
-		
+
 		proverManager = context.getService(proverManagerReference);
 		queryManager = context.getService(queryManagerReference);
 	}
@@ -45,8 +45,6 @@ public class Activator extends AbstractUIPlugin {
 		setInstance(null);
 		super.stop(context);
 	}
-	
-	
 
 	private static void setInstance(Activator instance) {
 		Activator.instance = instance;
@@ -57,7 +55,6 @@ public class Activator extends AbstractUIPlugin {
 	 *
 	 * @return the shared instance
 	 */
-	
 	public static Activator getInstance() {
 		return Activator.instance;
 	}
@@ -65,8 +62,8 @@ public class Activator extends AbstractUIPlugin {
 	public IProverManager getProverManagerInstance() {
 		return proverManager;
 	}
-	
-	public IQueryManager getQueryMangerInstance() {
+
+	public IQueryManager getQueryManagerInstance() {
 		return queryManager;
 	}
 

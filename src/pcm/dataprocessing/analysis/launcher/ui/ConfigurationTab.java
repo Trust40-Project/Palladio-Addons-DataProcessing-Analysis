@@ -52,7 +52,8 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 		Activator sharedInstance = Activator.getInstance();
 		if (sharedInstance != null) {
 			proversMap = sharedInstance.getProverManagerInstance().getProvers();
-			queryMap = sharedInstance.getQueryMangerInstance().getQueries();
+
+			queryMap = sharedInstance.getQueryManagerInstance().getQueries();
 		} else {
 			// TODO empty Map?
 		}
@@ -79,16 +80,17 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 		return !usageText.getText().isEmpty() && !allocText.getText().isEmpty() && !chText.getText().isEmpty();
 	}
 
-//TODO add "default" as constant
 	@Override
 	public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
 		configuration.setAttribute(Constants.USAGE_MODEL_LABEL.getConstant(), "");
 		configuration.setAttribute(Constants.ALLOCATION_MODEL_LABEL.getConstant(), "");
 		configuration.setAttribute(Constants.CHARACTERISTICS_MODEL_LABEL.getConstant(), "");
-		configuration.setAttribute(Constants.ANALYSIS_GOAL_LABEL.getConstant(), "default"); // Saving id of
-																							// QueryInformation
-		configuration.setAttribute(Constants.PROLOG_INTERPRETER_LABEL.getConstant(), "default"); // Saving the ID of the
-																									// ProverInformation
+		configuration.setAttribute(Constants.ANALYSIS_GOAL_LABEL.getConstant(),
+				Constants.DEFAULT_CONFIG_VALUE.getConstant()); // Saving id of
+																// QueryInformation
+		configuration.setAttribute(Constants.PROLOG_INTERPRETER_LABEL.getConstant(),
+				Constants.DEFAULT_CONFIG_VALUE.getConstant()); // Saving the ID of the
+		// ProverInformation
 	}
 
 	@Override
@@ -104,9 +106,10 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 			allocText.setText(configuration.getAttribute(Constants.ALLOCATION_MODEL_LABEL.getConstant(), ""));
 			chText.setText(configuration.getAttribute(Constants.CHARACTERISTICS_MODEL_LABEL.getConstant(), ""));
 
-			String analysisConfig = configuration.getAttribute(Constants.ANALYSIS_GOAL_LABEL.getConstant(), "default");
+			String analysisConfig = configuration.getAttribute(Constants.ANALYSIS_GOAL_LABEL.getConstant(),
+					Constants.DEFAULT_CONFIG_VALUE.getConstant());
 
-			if (!analysisConfig.equals("default")) {
+			if (!analysisConfig.equals(Constants.DEFAULT_CONFIG_VALUE.getConstant())) {
 				for (Entry<QueryInformation, IQueryInput> entry : queryMap.entrySet()) {
 					if ((entry.getKey().getId()).equals(analysisConfig)) {
 						analysisCombo.select(analysisCombo.indexOf(entry.getKey().getName()));
@@ -116,9 +119,9 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 			}
 
 			String prologCongfig = configuration.getAttribute(Constants.PROLOG_INTERPRETER_LABEL.getConstant(),
-					"default");
+					Constants.DEFAULT_CONFIG_VALUE.getConstant());
 
-			if (!prologCongfig.equals("default")) {
+			if (!prologCongfig.equals(Constants.DEFAULT_CONFIG_VALUE.getConstant())) {
 				for (Map.Entry<ProverInformation, IProverFactory> entry : proversMap.entrySet()) {
 					if ((entry.getKey().getId()).equals(prologCongfig)) {
 						prologCombo.select(prologCombo.indexOf(entry.getKey().getName()));

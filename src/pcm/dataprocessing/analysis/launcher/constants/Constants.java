@@ -16,7 +16,10 @@ public enum Constants {
 	CHARACTERISTICS_MODEL_LABEL("Select Characteristics Model"),
 	ADV_ARG_AND_RETURN("Argument and Return Indexing"),
 	ADV_OPTIM_NEGATION("Optimized Negations"),
-	ADV_SHORT_ASSIGN("Short Asssignments");
+	ADV_SHORT_ASSIGN("Short Asssignments"),
+	DEFAULT_CONFIG_VALUE("default");
+	
+
 	private final String attr;
 
 	Constants(String attr) {
