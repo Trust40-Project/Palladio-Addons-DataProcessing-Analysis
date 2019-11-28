@@ -1,6 +1,7 @@
 package pcm.dataprocessing.analysis.launcher.ui;
 
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -18,10 +19,10 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 import org.prolog4j.IProverFactory;
 import org.prolog4j.ProverInformation;
-import org.prolog4j.Query;
 import pcm.dataprocessing.analysis.launcher.constants.Constants;
 import de.uka.ipd.sdq.workflow.launchconfig.tabs.TabHelper;
 import pcm.dataprocessing.analysis.launcher.delegate.Activator;
+import pcm.dataprocessing.analysis.launcher.query.IQueryInput;
 import pcm.dataprocessing.analysis.launcher.query.QueryInformation;
 
 /**
@@ -45,13 +46,14 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 	private Group prologGroup;
 
 	private Map<ProverInformation, IProverFactory> proversMap;
-	private Map<QueryInformation, Query> queryMap;
+	private Map<QueryInformation, IQueryInput> queryMap;
 
 	public ConfigurationTab() {
 		Activator sharedInstance = Activator.getInstance();
 		if (sharedInstance != null) {
 			proversMap = sharedInstance.getProverManagerInstance().getProvers();
-			queryMap = sharedInstance.getQueryMangerInstance().getQueries();
+
+			queryMap = sharedInstance.getQueryManagerInstance().getQueries();
 		} else {
 			// TODO empty Map?
 		}
@@ -77,16 +79,18 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 	public boolean canSave() {
 		return !usageText.getText().isEmpty() && !allocText.getText().isEmpty() && !chText.getText().isEmpty();
 	}
-//TODO add "default" as constant
+
 	@Override
 	public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
 		configuration.setAttribute(Constants.USAGE_MODEL_LABEL.getConstant(), "");
 		configuration.setAttribute(Constants.ALLOCATION_MODEL_LABEL.getConstant(), "");
 		configuration.setAttribute(Constants.CHARACTERISTICS_MODEL_LABEL.getConstant(), "");
-		configuration.setAttribute(Constants.ANALYSIS_GOAL_LABEL.getConstant(), "default"); // Saving id of
-																							// QueryInformation
-		configuration.setAttribute(Constants.PROLOG_INTERPRETER_LABEL.getConstant(), "default"); // Saving the ID of the
-																									// ProverInformation
+		configuration.setAttribute(Constants.ANALYSIS_GOAL_LABEL.getConstant(),
+				Constants.DEFAULT_CONFIG_VALUE.getConstant()); // Saving id of
+																// QueryInformation
+		configuration.setAttribute(Constants.PROLOG_INTERPRETER_LABEL.getConstant(),
+				Constants.DEFAULT_CONFIG_VALUE.getConstant()); // Saving the ID of the
+		// ProverInformation
 	}
 
 	@Override
@@ -102,10 +106,11 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 			allocText.setText(configuration.getAttribute(Constants.ALLOCATION_MODEL_LABEL.getConstant(), ""));
 			chText.setText(configuration.getAttribute(Constants.CHARACTERISTICS_MODEL_LABEL.getConstant(), ""));
 
-			String analysisConfig = configuration.getAttribute(Constants.ANALYSIS_GOAL_LABEL.getConstant(), "default");
-			
-			if (!analysisConfig.equals("default")) {
-				for (Map.Entry<QueryInformation, Query> entry : queryMap.entrySet()) {
+			String analysisConfig = configuration.getAttribute(Constants.ANALYSIS_GOAL_LABEL.getConstant(),
+					Constants.DEFAULT_CONFIG_VALUE.getConstant());
+
+			if (!analysisConfig.equals(Constants.DEFAULT_CONFIG_VALUE.getConstant())) {
+				for (Entry<QueryInformation, IQueryInput> entry : queryMap.entrySet()) {
 					if ((entry.getKey().getId()).equals(analysisConfig)) {
 						analysisCombo.select(analysisCombo.indexOf(entry.getKey().getName()));
 					}
@@ -113,9 +118,10 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 				}
 			}
 
-			String prologCongfig = configuration.getAttribute(Constants.PROLOG_INTERPRETER_LABEL.getConstant(), "default");
+			String prologCongfig = configuration.getAttribute(Constants.PROLOG_INTERPRETER_LABEL.getConstant(),
+					Constants.DEFAULT_CONFIG_VALUE.getConstant());
 
-			if (!prologCongfig.equals("default")) {
+			if (!prologCongfig.equals(Constants.DEFAULT_CONFIG_VALUE.getConstant())) {
 				for (Map.Entry<ProverInformation, IProverFactory> entry : proversMap.entrySet()) {
 					if ((entry.getKey().getId()).equals(prologCongfig)) {
 						prologCombo.select(prologCombo.indexOf(entry.getKey().getName()));
@@ -139,13 +145,12 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 		String analysisName = analysisCombo.getItem(analysisCombo.getSelectionIndex());
 		String analysisId = (String) analysisCombo.getData(analysisName);
 
-		for (Map.Entry<QueryInformation, Query> entry : queryMap.entrySet()) {
+		for (Entry<QueryInformation, IQueryInput> entry : queryMap.entrySet()) {
 			if ((entry.getKey().getId()).equals(analysisId)) {
 				configuration.setAttribute(Constants.ANALYSIS_GOAL_LABEL.getConstant(), entry.getKey().getId());
 			}
 		}
 
-		
 		String prologName = prologCombo.getItem(prologCombo.getSelectionIndex());
 		String prologId = (String) prologCombo.getData(analysisName);
 
@@ -201,7 +206,7 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 
 		analysisCombo = new Combo(analysisGroup, SWT.DROP_DOWN);
 
-		for (Map.Entry<QueryInformation, Query> entry : queryMap.entrySet()) {
+		for (Entry<QueryInformation, IQueryInput> entry : queryMap.entrySet()) {
 			String s = entry.getKey().getName();
 			analysisCombo.add(s);
 			analysisCombo.setData(s, entry.getKey().getId());

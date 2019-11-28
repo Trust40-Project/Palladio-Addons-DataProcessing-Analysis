@@ -32,6 +32,9 @@ import org.prolog4j.Prover;
 import org.prolog4j.ProverInformation;
 
 import pcm.dataprocessing.analysis.launcher.delegate.Activator;
+import pcm.dataprocessing.analysis.launcher.query.IQueryInput;
+import pcm.dataprocessing.analysis.launcher.query.IQueryManager;
+import pcm.dataprocessing.analysis.launcher.query.QueryInformation;
 import edu.kit.ipd.sdq.dataflow.systemmodel.SystemTranslator;
 import edu.kit.ipd.sdq.dataflow.systemmodel.configuration.Configuration;
 import pcm.dataprocessing.analysis.launcher.constants.Constants;
@@ -141,7 +144,8 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 	}
 
 	/**
-	 * Gets a system translator with parameters specified in the launch configuration.
+	 * Gets a system translator with parameters specified in the launch
+	 * configuration.
 	 * 
 	 * @param configuration
 	 * @return
@@ -149,17 +153,26 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 	 */
 	private SystemTranslator getTranslator(ILaunchConfiguration launchConfig) throws CoreException {
 
-		// TODO add to Configuration to LaunchConfig and get the config here
 		Configuration noOptimizationConfiguration = new Configuration();
-		noOptimizationConfiguration.setArgumentAndReturnValueIndexing(false);
-		noOptimizationConfiguration.setOptimizedNegations(false);
-		noOptimizationConfiguration.setShorterAssignments(false);
+
+		boolean shortAssign = false;
+		boolean optimNegation = false;
+		boolean returnValueIndexing = false;
+
+		returnValueIndexing = launchConfig.getAttribute(Constants.ADV_ARG_AND_RETURN.getConstant(), false);
+		optimNegation = launchConfig.getAttribute(Constants.ADV_OPTIM_NEGATION.getConstant(), false);
+		shortAssign = launchConfig.getAttribute(Constants.ADV_SHORT_ASSIGN.getConstant(), false);
+
+		noOptimizationConfiguration.setArgumentAndReturnValueIndexing(returnValueIndexing);
+		noOptimizationConfiguration.setOptimizedNegations(optimNegation);
+		noOptimizationConfiguration.setShorterAssignments(shortAssign);
 
 		return new SystemTranslator(noOptimizationConfiguration);
 	}
 
 	/**
-	 * Translates the system model with a system translator and gets the analysis goal.
+	 * Translates the system model with a system translator and gets the analysis
+	 * goal.
 	 * 
 	 * @param sysTranslator
 	 * @throws CoreException
@@ -175,8 +188,6 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 
 		String prologConfig = launchConfig.getAttribute(Constants.PROLOG_INTERPRETER_LABEL.getConstant(), "default");
 
-		// TODO remove hardcoded
-
 		if (!prologConfig.equals("default")) {
 			for (Map.Entry<ProverInformation, IProverFactory> entry : proverManager.getProvers().entrySet()) {
 				if (entry.getKey().getId().equals(prologConfig)) {
@@ -185,21 +196,32 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 			}
 		} else {
 			// TODO find suitable standard factory
-			// proverFactory = new TuPrologProverFactory();
 		}
 
-		Prover myProver = proverFactory.createProver();
+		// TODO proverfactory can be null.
 
+		Prover myProver = proverFactory.createProver();
 		myProver.addTheory(testingCode);
 
-		String queryToApply = ".";
+		IQueryManager queryManager = Activator.getInstance().getQueryManagerInstance();
+		IQueryInput queryInput = null;
 
-		// TODO get Query to apply
+		String analysisConfig = launchConfig.getAttribute(Constants.ANALYSIS_GOAL_LABEL.getConstant(), "default");
 
-		org.prolog4j.Query query = myProver.query(queryToApply);
+		if (!analysisConfig.equals("default")) {
+			for (Map.Entry<QueryInformation, IQueryInput> entry : queryManager.getQueries().entrySet()) {
+				if (entry.getKey().getId().equals(analysisConfig)) {
+					queryInput = entry.getValue();
+				}
+			}
+		} else {
+			// TODO find standard query
+		}
+
+		// TODO query can be null.
+
+		myProver.query(queryInput.getQuery());
 	}
-	
-
 
 	private URI getUriFromText(String text) throws MalformedURLException {
 
