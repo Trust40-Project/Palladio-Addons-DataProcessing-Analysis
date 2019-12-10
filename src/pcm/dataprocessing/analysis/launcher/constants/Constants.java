@@ -14,6 +14,7 @@ public enum Constants {
 	USAGE_MODEL_LABEL("Select Usage Model"),
 	ALLOCATION_MODEL_LABEL("Select Allocation Model"),
 	CHARACTERISTICS_MODEL_LABEL("Select Characteristics Model"),
+	ADV_TAB_NAME("Advanced Configuration"),
 	ADV_ARG_AND_RETURN("Argument and Return Indexing"),
 	ADV_OPTIM_NEGATION("Optimized Negations"),
 	ADV_SHORT_ASSIGN("Short Asssignments"),

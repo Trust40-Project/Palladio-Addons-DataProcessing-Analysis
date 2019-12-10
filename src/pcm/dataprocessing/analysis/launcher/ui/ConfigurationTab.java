@@ -55,7 +55,7 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 
 			queryMap = sharedInstance.getQueryManagerInstance().getQueries();
 		} else {
-			// TODO empty Map?
+			// TODO error output : activator failed!
 		}
 	}
 
@@ -71,13 +71,8 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 
 	@Override
 	public boolean isValid(final ILaunchConfiguration launchConfig) {
-		return true;
-
-	}
-
-	@Override
-	public boolean canSave() {
 		return !usageText.getText().isEmpty() && !allocText.getText().isEmpty() && !chText.getText().isEmpty();
+
 	}
 
 	@Override
@@ -152,7 +147,7 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 		}
 
 		String prologName = prologCombo.getItem(prologCombo.getSelectionIndex());
-		String prologId = (String) prologCombo.getData(analysisName);
+		String prologId = (String) prologCombo.getData(prologName);
 
 		for (Map.Entry<ProverInformation, IProverFactory> entry : proversMap.entrySet()) {
 			if ((entry.getKey().getId()).equals(prologId)) {
@@ -229,7 +224,6 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 			prologCombo.setData(s, entry.getKey().getId());
 		}
 
-		// prologCombo.add(Constants.PROLOG_INTERPRETER_ONE.getConstant());
 		prologCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
 		setControl(comp);

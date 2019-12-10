@@ -57,9 +57,9 @@ public class AdvancedConfigurationTab extends AbstractLaunchConfigurationTab {
 		shortAssign.setText(Constants.ADV_SHORT_ASSIGN.getConstant());
 		shortAssign.setLayout(new RowLayout(SWT.HORIZONTAL));
 
-		shortAssignRadio[0] = new Button(optimNegations, SWT.RADIO);
+		shortAssignRadio[0] = new Button(shortAssign, SWT.RADIO);
 		shortAssignRadio[0].setText("False");
-		shortAssignRadio[1] = new Button(optimNegations, SWT.RADIO);
+		shortAssignRadio[1] = new Button(shortAssign, SWT.RADIO);
 		shortAssignRadio[1].setText("True");
 
 		setControl(comp);
@@ -86,7 +86,6 @@ public class AdvancedConfigurationTab extends AbstractLaunchConfigurationTab {
 					configuration.getAttribute(Constants.ADV_OPTIM_NEGATION.getConstant(), false));
 			setTrueFalse(shortAssignRadio, configuration.getAttribute(Constants.ADV_SHORT_ASSIGN.getConstant(), false));
 		} catch (CoreException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -100,9 +99,14 @@ public class AdvancedConfigurationTab extends AbstractLaunchConfigurationTab {
 	}
 
 	@Override
+	public boolean isValid(final ILaunchConfiguration launchConfig) {
+		return true;
+
+	}
+	
+	@Override
 	public String getName() {
-		// TODO remove hardcoded
-		return "test";
+		return Constants.ADV_TAB_NAME.getConstant();
 	}
 
 	/**

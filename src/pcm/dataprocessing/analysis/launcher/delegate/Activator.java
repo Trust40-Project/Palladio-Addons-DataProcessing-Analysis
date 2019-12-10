@@ -4,6 +4,8 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
+import org.palladiosimulator.pcm.dataprocessing.analysis.transformation.basic.ITransformator;
+import org.palladiosimulator.pcm.dataprocessing.analysis.transformation.basic.ITransformatorFactory;
 import org.prolog4j.manager.IProverManager;
 
 import pcm.dataprocessing.analysis.launcher.query.IQueryManager;
@@ -34,7 +36,8 @@ public class Activator extends AbstractUIPlugin {
 		setInstance(this);
 
 		ServiceReference<IProverManager> proverManagerReference = context.getServiceReference(IProverManager.class);
-		proverManager = context.getService(proverManagerReference);
+		this.proverManager = context.getService(proverManagerReference);
+
 	}
 
 	@Override
@@ -61,18 +64,19 @@ public class Activator extends AbstractUIPlugin {
 	}
 
 	public IQueryManager getQueryManagerInstance() {
-	    IQueryManager foundQueryManager = queryManager;
-	    if (foundQueryManager == null) {
-	        synchronized (this) {
-	            foundQueryManager = queryManager;
-                if (foundQueryManager == null) {
-                    BundleContext bundleContext = getInstance().getBundle().getBundleContext();
-                    ServiceReference<IQueryManager> queryManagerReference = bundleContext.getServiceReference(IQueryManager.class);
-                    foundQueryManager = bundleContext.getService(queryManagerReference);
-                    queryManager = foundQueryManager;
-                }
-            }
-	    }
+		IQueryManager foundQueryManager = queryManager;
+		if (foundQueryManager == null) {
+			synchronized (this) {
+				foundQueryManager = queryManager;
+				if (foundQueryManager == null) {
+					BundleContext bundleContext = getInstance().getBundle().getBundleContext();
+					ServiceReference<IQueryManager> queryManagerReference = bundleContext
+							.getServiceReference(IQueryManager.class);
+					foundQueryManager = bundleContext.getService(queryManagerReference);
+					queryManager = foundQueryManager;
+				}
+			}
+		}
 		return foundQueryManager;
 	}
 
