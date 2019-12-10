@@ -8,7 +8,7 @@ public class QueryInformation {
 	private final String name;
 	private final String id;
 	
-	public QueryInformation(String name, String id) {
+	public QueryInformation(String id, String name) {
 		this.name = name;
 		this.id = id;
 	}

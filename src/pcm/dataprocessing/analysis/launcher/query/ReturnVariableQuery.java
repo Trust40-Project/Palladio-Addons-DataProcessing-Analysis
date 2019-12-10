@@ -9,7 +9,7 @@ import org.prolog4j.Solution;
  * @author Mirko Sowa
  *
  */
-@Component(immediate = true, property = { "id=pcm.dataprocessing.analysis.launcher.query", "name=ReturnVariableQuery" })
+@Component(immediate = true, property = { "id=pcm.dataprocessing.analysis.launcher.returnquery", "name=ReturnVariableQuery" })
 public class ReturnVariableQuery implements IQueryInput {
 
 	private final static String myGoal = "S=[CALLEE, CALL, OP|_], operationCall(OP, CALLEE, CALL),\\r\\n\"\r\n"
