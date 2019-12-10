@@ -71,7 +71,8 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 
 	@Override
 	public boolean isValid(final ILaunchConfiguration launchConfig) {
-		return !usageText.getText().isEmpty() && !allocText.getText().isEmpty() && !chText.getText().isEmpty();
+		return !usageText.getText().isEmpty() && !allocText.getText().isEmpty() && !chText.getText().isEmpty()
+				&& analysisCombo.getSelectionIndex() != -1;
 
 	}
 
@@ -208,6 +209,7 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 		}
 
 		analysisCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		analysisCombo.clearSelection();
 
 		/* Prolog Interpreter */
 
@@ -225,7 +227,6 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 		}
 
 		prologCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-
 		setControl(comp);
 
 	}

@@ -120,7 +120,7 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 	 */
 	private void setupModels() {
 		if (usageModelPath != null && allocModelPath != null && chModelPath != null && usageModelPath.isFile()
-				&& allocModelPath.isFile() && false) {
+				&& allocModelPath.isFile() && chModelPath.isFile()) {
 			ResourceSet rs = new ResourceSetImpl();
 
 			usageModel = (UsageModel) rs.getResource(usageModelPath, true).getContents().get(0);
@@ -269,8 +269,6 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 					queryInput = entry.getValue();
 				}
 			}
-		} else {
-			// TODO force query selection
 		}
 
 		Query myQuery = myProver.query(queryInput.getQuery());
