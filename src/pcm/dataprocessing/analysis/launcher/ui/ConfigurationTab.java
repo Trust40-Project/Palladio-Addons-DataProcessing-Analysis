@@ -22,7 +22,7 @@ import org.prolog4j.ProverInformation;
 import pcm.dataprocessing.analysis.launcher.constants.Constants;
 import de.uka.ipd.sdq.workflow.launchconfig.tabs.TabHelper;
 import pcm.dataprocessing.analysis.launcher.delegate.Activator;
-import pcm.dataprocessing.analysis.launcher.query.IQueryInput;
+import pcm.dataprocessing.analysis.launcher.query.IQuery;
 import pcm.dataprocessing.analysis.launcher.query.QueryInformation;
 
 /**
@@ -46,7 +46,7 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 	private Group prologGroup;
 
 	private Map<ProverInformation, IProverFactory> proversMap;
-	private Map<QueryInformation, IQueryInput> queryMap;
+	private Map<QueryInformation, IQuery> queryMap;
 
 	public ConfigurationTab() {
 		Activator sharedInstance = Activator.getInstance();
@@ -106,7 +106,7 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 					Constants.DEFAULT_CONFIG_VALUE.getConstant());
 
 			if (!analysisConfig.equals(Constants.DEFAULT_CONFIG_VALUE.getConstant())) {
-				for (Entry<QueryInformation, IQueryInput> entry : queryMap.entrySet()) {
+				for (Entry<QueryInformation, IQuery> entry : queryMap.entrySet()) {
 					if ((entry.getKey().getId()).equals(analysisConfig)) {
 						analysisCombo.select(analysisCombo.indexOf(entry.getKey().getName()));
 					}
@@ -141,7 +141,7 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 		String analysisName = analysisCombo.getItem(analysisCombo.getSelectionIndex());
 		String analysisId = (String) analysisCombo.getData(analysisName);
 
-		for (Entry<QueryInformation, IQueryInput> entry : queryMap.entrySet()) {
+		for (Entry<QueryInformation, IQuery> entry : queryMap.entrySet()) {
 			if ((entry.getKey().getId()).equals(analysisId)) {
 				configuration.setAttribute(Constants.ANALYSIS_GOAL_LABEL.getConstant(), entry.getKey().getId());
 			}
@@ -202,7 +202,7 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 
 		analysisCombo = new Combo(analysisGroup, SWT.DROP_DOWN);
 
-		for (Entry<QueryInformation, IQueryInput> entry : queryMap.entrySet()) {
+		for (Entry<QueryInformation, IQuery> entry : queryMap.entrySet()) {
 			String s = entry.getKey().getName();
 			analysisCombo.add(s);
 			analysisCombo.setData(s, entry.getKey().getId());

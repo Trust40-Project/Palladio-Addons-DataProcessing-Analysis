@@ -10,5 +10,5 @@ import org.prolog4j.Query;
  *
  */
 public interface IQueryManager {
-	Map<QueryInformation, IQueryInput> getQueries();
+	Map<QueryInformation, IQuery> getQueries();
 }

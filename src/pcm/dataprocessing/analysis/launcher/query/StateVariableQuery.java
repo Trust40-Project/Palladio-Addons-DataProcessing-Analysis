@@ -10,7 +10,7 @@ import org.prolog4j.Solution;
  *
  */
 @Component(immediate = true, property = { "id=pcm.dataprocessing.analysis.launcher.statequery", "name=StateVariableQuery" })
-public class StateVariableQuery implements IQueryInput {
+public class StateVariableQuery implements IQuery {
 
 	private final static String myGoal = "S=[CALLEE, CALL, OP|_], operationCall(OP, CALLEE, CALL),\r\n"
 			+ "operationStateType(CALLEE, SVAL, ST), dataTypeAttribute(ST, 'EnumCharacteristicType AccessRights (_rkiSMFqnEeiY18w7ObeSrg)'),\r\n"
@@ -19,6 +19,11 @@ public class StateVariableQuery implements IQueryInput {
 	@Override
 	public String getQuery() {
 		return myGoal;
+	}
+
+	@Override
+	public String getResultVars() {
+		return "S"; //TODO get correct result vars
 	}
 
 }

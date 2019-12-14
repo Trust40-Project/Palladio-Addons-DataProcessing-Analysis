@@ -19,26 +19,26 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 @Component(immediate = true)
 public class QueryManager implements IQueryManager {
 
-	private final Map<QueryInformation, IQueryInput> availableQueries = new HashMap<QueryInformation, IQueryInput>();
+	private final Map<QueryInformation, IQuery> availableQueries = new HashMap<QueryInformation, IQuery>();
 
 	@Override
-	public Map<QueryInformation, IQueryInput> getQueries() {
+	public Map<QueryInformation, IQuery> getQueries() {
 		return Collections.unmodifiableMap(availableQueries);
 
 	}
 
 	@Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC)
-	public void bindQuery(IQueryInput input, Map<String, String> serviceProperties) {
+	public void bindQuery(IQuery input, Map<String, String> serviceProperties) {
 		String queryId = serviceProperties.get("id");
 		String queryName = serviceProperties.get("name");
 		availableQueries.put(new QueryInformation(queryId, queryName), input);
 	}
 
-	public void unbindQuery(IQueryInput input) {
+	public void unbindQuery(IQuery input) {
 		availableQueries.remove(input);
 	}
 
-	public void updatedQuery(IQueryInput input, Map<String, String> serviceProperties) {
+	public void updatedQuery(IQuery input, Map<String, String> serviceProperties) {
 		unbindQuery(input);
 		bindQuery(input, serviceProperties);
 	}

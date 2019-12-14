@@ -10,7 +10,7 @@ import org.prolog4j.Solution;
  *
  */
 @Component(immediate = true, property = { "id=pcm.dataprocessing.analysis.launcher.returnquery", "name=ReturnVariableQuery" })
-public class ReturnVariableQuery implements IQueryInput {
+public class ReturnVariableQuery implements IQuery {
 
 	private final static String myGoal = "S=[CALLEE, CALL, OP|_], operationCall(OP, CALLEE, CALL),\\r\\n\"\r\n"
 			+ "operationReturnValueType(CALLEE, RETVAL, RT), dataTypeAttribute(RT, 'EnumCharacteristicType AccessRights (_rkiSMFqnEeiY18w7ObeSrg)'),\\r\\n\"\r\n"
@@ -19,6 +19,12 @@ public class ReturnVariableQuery implements IQueryInput {
 	@Override
 	public String getQuery() {
 		return myGoal;
+	}
+
+	@Override
+	public String getResultVars() {
+		// TODO get correct result vars
+		return "S";
 	}
 
 }

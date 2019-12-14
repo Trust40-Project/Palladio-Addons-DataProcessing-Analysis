@@ -3,7 +3,7 @@
    <property name="id" value="pcm.dataprocessing.analysis.launcher.returnquery"/>
    <property name="name" value="ReturnVariableQuery"/>
    <service>
-      <provide interface="pcm.dataprocessing.analysis.launcher.query.IQueryInput"/>
+      <provide interface="pcm.dataprocessing.analysis.launcher.query.IQuery"/>
    </service>
    <implementation class="pcm.dataprocessing.analysis.launcher.query.ReturnVariableQuery"/>
 </scr:component>

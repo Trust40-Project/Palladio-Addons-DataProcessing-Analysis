@@ -1,6 +1,8 @@
 package pcm.dataprocessing.analysis.launcher.delegate;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,6 +13,8 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
@@ -43,7 +47,7 @@ import org.prolog4j.Query;
 import org.prolog4j.Solution;
 
 import pcm.dataprocessing.analysis.launcher.delegate.Activator;
-import pcm.dataprocessing.analysis.launcher.query.IQueryInput;
+import pcm.dataprocessing.analysis.launcher.query.IQuery;
 import pcm.dataprocessing.analysis.launcher.query.IQueryManager;
 import pcm.dataprocessing.analysis.launcher.query.QueryInformation;
 import edu.kit.ipd.sdq.dataflow.systemmodel.SystemTranslator;
@@ -68,6 +72,11 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 	private Allocation allocationModel = null;
 	private CharacteristicTypeContainer charTypeContainer = null;
 
+	private IProverFactory proverFactory = null;
+	private IQuery query = null;
+	org.palladiosimulator.pcm.dataprocessing.prolog.prologmodel.System dataFlowSystemModel = null;
+	SystemTranslator sysTranslator = null;
+
 	public LaunchDelegate() {
 	}
 
@@ -77,18 +86,25 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 
 		IProfileRegistry.eINSTANCE.getClass();
 
-		this.resolvePaths(configuration);
+		resolvePaths(configuration);
 
-		this.setupModels();
+		this.dataFlowSystemModel = convertToSystemModel();
 
-		org.palladiosimulator.pcm.dataprocessing.prolog.prologmodel.System dataFlowSystemModel = convertToSystemModel();
+		this.sysTranslator = getTranslator(configuration);
 
-		SystemTranslator sysTranslator = getTranslator(configuration);
+		this.proverFactory = getProverFactory(configuration);
 
-		this.translate(configuration, sysTranslator, dataFlowSystemModel);
+		this.query = getAnalysisGoal(configuration);
+
+		evaluateModel(configuration, sysTranslator, dataFlowSystemModel);
 
 	}
 
+	/**
+	 * 
+	 * @param configuration
+	 * @throws CoreException
+	 */
 	private void resolvePaths(ILaunchConfiguration configuration) throws CoreException {
 
 		try {
@@ -97,30 +113,6 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 					configuration.getAttribute(Constants.ALLOCATION_MODEL_LABEL.getConstant(), ""));
 			chModelPath = getUriFromText(
 					configuration.getAttribute(Constants.CHARACTERISTICS_MODEL_LABEL.getConstant(), ""));
-		} catch (MalformedURLException e) {
-
-			Display.getDefault().syncExec(new Runnable() {
-				public void run() {
-					int style = SWT.ICON_ERROR | SWT.OK;
-					Shell shell = Display.getCurrent().getActiveShell();
-					if (shell == null) {
-						shell = new Shell();
-					}
-					MessageBox messageBox = new MessageBox(shell, style);
-					messageBox.setMessage("Could not resolve paths.");
-					messageBox.open();
-				}
-			});
-		}
-
-	}
-
-	/**
-	 * Gets and resolves the given paths for the respective models.
-	 */
-	private void setupModels() {
-		if (usageModelPath != null && allocModelPath != null && chModelPath != null && usageModelPath.isFile()
-				&& allocModelPath.isFile() && chModelPath.isFile()) {
 			ResourceSet rs = new ResourceSetImpl();
 
 			usageModel = (UsageModel) rs.getResource(usageModelPath, true).getContents().get(0);
@@ -129,29 +121,26 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 
 			EcoreUtil.resolveAll(rs);
 
-		} else {
-			Display.getDefault().syncExec(new Runnable() {
-				public void run() {
-					int style = SWT.ICON_ERROR | SWT.OK;
-					Shell shell = Display.getCurrent().getActiveShell();
-					if (shell == null) {
-						shell = new Shell();
-					}
-					MessageBox messageBox = new MessageBox(shell, style);
-					messageBox.setMessage("Could not resolve paths.");
-					messageBox.open();
-				}
-			});
+		} catch (CoreException | MalformedURLException e) {
+			throw new CoreException(
+					new Status(IStatus.ERROR, "pcm.dataprocessing.analysis.launcher", "Could not resolve paths.")); // TODO
+																													// get
+																													// plugin
+																													// id
 		}
 
 	}
 
+
+
 	/**
 	 * Converts the given models to a compound system model, which is returned.
 	 * 
-	 * @return the system model
+	 * @return the system model extracted from the given models
+	 * @throws CoreException if the models could not be resolved to a working model
 	 */
-	private org.palladiosimulator.pcm.dataprocessing.prolog.prologmodel.System convertToSystemModel() {
+	private org.palladiosimulator.pcm.dataprocessing.prolog.prologmodel.System convertToSystemModel()
+			throws CoreException {
 		if (usageModel != null && allocationModel != null && charTypeContainer != null) {
 			IReturnValueAssignmentGeneratorRegistry registry = new IReturnValueAssignmentGeneratorRegistry() {
 				@Override
@@ -170,21 +159,11 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 			return myTransformator.transform(usageModel, allocationModel, charTypeContainer);
 
 		} else {
-
-			Display.getDefault().syncExec(new Runnable() {
-				public void run() {
-					int style = SWT.ICON_ERROR | SWT.OK;
-					Shell shell = Display.getCurrent().getActiveShell();
-					if (shell == null) {
-						shell = new Shell();
-					}
-					MessageBox messageBox = new MessageBox(shell, style);
-					messageBox.setMessage("Could not resolve models.");
-					messageBox.open();
-				}
-			});
-
-			return null;
+			throw new CoreException(
+					new Status(IStatus.ERROR, "pcm.dataprocessing.analysis.launcher", "Could not resolve models.")); // TODO
+																														// get
+																														// plugin
+																														// id
 		}
 	}
 
@@ -214,29 +193,22 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 
 		return new SystemTranslator(noOptimizationConfiguration);
 	}
-
 	/**
-	 * Translates the system model with a system translator and gets the analysis
-	 * goal.
 	 * 
-	 * @param sysTranslator
+	 * @param launchConfig
+	 * @return
 	 * @throws CoreException
 	 */
-	private void translate(ILaunchConfiguration launchConfig, SystemTranslator sysTranslator,
-			org.palladiosimulator.pcm.dataprocessing.prolog.prologmodel.System dataFlowSystemModel)
-			throws CoreException {
-
-		String testingCode = sysTranslator.translate(dataFlowSystemModel).getCode();
-
+	private IProverFactory getProverFactory(ILaunchConfiguration launchConfig) throws CoreException {
 		IProverManager proverManager = Activator.getInstance().getProverManagerInstance();
-		IProverFactory proverFactory = null;
+		IProverFactory myProverFactory = null;
 
 		String prologConfig = launchConfig.getAttribute(Constants.PROLOG_INTERPRETER_LABEL.getConstant(), "default");
 
 		if (!prologConfig.equals("default")) {
 			for (Map.Entry<ProverInformation, IProverFactory> entry : proverManager.getProvers().entrySet()) {
 				if (entry.getKey().getId().equals(prologConfig)) {
-					proverFactory = entry.getValue();
+					myProverFactory = entry.getValue();
 				}
 			}
 		} else {
@@ -251,31 +223,68 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 			Collections.sort(availableProversInformation, compareByName);
 
 			if (availableProversInformation.get(0) != null) {
-				proverFactory = proverManager.getProvers().get(availableProversInformation.get(0));
+				myProverFactory = proverManager.getProvers().get(availableProversInformation.get(0));
 			}
 		}
 
-		Prover myProver = proverFactory.createProver();
-		myProver.addTheory(testingCode);
+		return myProverFactory;
 
+	}
+
+	/**
+	 * 
+	 * @param launchConfig
+	 * @return
+	 * @throws CoreException
+	 */
+	private IQuery getAnalysisGoal(ILaunchConfiguration launchConfig) throws CoreException {
 		IQueryManager queryManager = Activator.getInstance().getQueryManagerInstance();
-		IQueryInput queryInput = null;
+		IQuery queryInput = null;
 
 		String analysisConfig = launchConfig.getAttribute(Constants.ANALYSIS_GOAL_LABEL.getConstant(), "default");
 
 		if (!analysisConfig.equals("default")) {
-			for (Map.Entry<QueryInformation, IQueryInput> entry : queryManager.getQueries().entrySet()) {
+			for (Map.Entry<QueryInformation, IQuery> entry : queryManager.getQueries().entrySet()) {
 				if (entry.getKey().getId().equals(analysisConfig)) {
 					queryInput = entry.getValue();
 				}
 			}
 		}
 
-		Query myQuery = myProver.query(queryInput.getQuery());
-		Solution<Object> solution = myQuery.solve();
-		System.out.println("Query solution had success: " + solution.isSuccess());
+		return queryInput;
+
 	}
 
+	/**
+	 * 
+	 * @param launchConfig
+	 * @param sysTranslator
+	 * @param dataFlowSystemModel
+	 * @throws CoreException
+	 */
+	private void evaluateModel(ILaunchConfiguration launchConfig, SystemTranslator sysTranslator,
+			org.palladiosimulator.pcm.dataprocessing.prolog.prologmodel.System dataFlowSystemModel)
+			throws CoreException {
+
+		String testingCode = sysTranslator.translate(dataFlowSystemModel).getCode();
+
+		Prover myProver = proverFactory.createProver();
+		myProver.addTheory(testingCode);
+
+		Query myQuery = myProver.query(query.getQuery());
+		Solution<Object> solution = myQuery.solve();
+		if (solution.isSuccess()) {
+			System.out.println("Query solution had success: " + solution.isSuccess()); // TODO change output console
+		} else {
+			// TODO iterate over solution, output only relevant vars
+		}
+	}
+	/**
+	 * 
+	 * @param text
+	 * @return
+	 * @throws MalformedURLException
+	 */
 	private URI getUriFromText(String text) throws MalformedURLException {
 
 		URI result;
