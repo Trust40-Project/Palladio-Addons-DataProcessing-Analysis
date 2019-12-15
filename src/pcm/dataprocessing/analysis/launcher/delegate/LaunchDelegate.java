@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
@@ -18,6 +20,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
+import org.eclipse.debug.ui.console.IConsole;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -26,6 +29,10 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.console.ConsolePlugin;
+import org.eclipse.ui.console.IConsoleManager;
+import org.eclipse.ui.console.MessageConsole;
+import org.eclipse.ui.console.MessageConsoleStream;
 import org.modelversioning.emfprofile.registry.IProfileRegistry;
 import org.palladiosimulator.pcm.allocation.Allocation;
 import org.palladiosimulator.pcm.dataprocessing.analysis.transformation.basic.ITransformator;
@@ -123,15 +130,10 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 
 		} catch (CoreException | MalformedURLException e) {
 			throw new CoreException(
-					new Status(IStatus.ERROR, "pcm.dataprocessing.analysis.launcher", "Could not resolve paths.")); // TODO
-																													// get
-																													// plugin
-																													// id
+					new Status(IStatus.ERROR, "pcm.dataprocessing.analysis.launcher", "Could not resolve paths."));
 		}
 
 	}
-
-
 
 	/**
 	 * Converts the given models to a compound system model, which is returned.
@@ -160,10 +162,7 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 
 		} else {
 			throw new CoreException(
-					new Status(IStatus.ERROR, "pcm.dataprocessing.analysis.launcher", "Could not resolve models.")); // TODO
-																														// get
-																														// plugin
-																														// id
+					new Status(IStatus.ERROR, "pcm.dataprocessing.analysis.launcher", "Could not resolve models."));
 		}
 	}
 
@@ -193,6 +192,7 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 
 		return new SystemTranslator(noOptimizationConfiguration);
 	}
+
 	/**
 	 * 
 	 * @param launchConfig
@@ -273,12 +273,23 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 
 		Query myQuery = myProver.query(query.getQuery());
 		Solution<Object> solution = myQuery.solve();
-		if (solution.isSuccess()) {
-			System.out.println("Query solution had success: " + solution.isSuccess()); // TODO change output console
+		MessageConsole myConsole = findConsole(Constants.CONSOLE_ID.getConstant());
+		MessageConsoleStream out = myConsole.newMessageStream();
+		
+		if (!solution.isSuccess()) {
+			out.println("Query solution had success: " + solution.isSuccess()); 
 		} else {
-			// TODO iterate over solution, output only relevant vars
+			out.println(solution.get(query.getResultVars()));
+			
+			/*List<Object> solutionList = new LinkedList<Object>(solution.toList());
+			for(Object e : solutionList) {
+				out.println(e.toString());
+			}
+			*/
+		
 		}
 	}
+
 	/**
 	 * 
 	 * @param text
@@ -298,4 +309,15 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 
 	}
 
+	private MessageConsole findConsole(String name) {
+		ConsolePlugin plugin = ConsolePlugin.getDefault();
+		IConsoleManager conMan = plugin.getConsoleManager();
+		for (org.eclipse.ui.console.IConsole console1 : conMan.getConsoles())
+			if (name.equals(console1.getName()))
+				return (MessageConsole) console1;
+		// no console found, so create a new one
+		MessageConsole myConsole = new MessageConsole(name, null);
+		conMan.addConsoles(new org.eclipse.ui.console.IConsole[] { myConsole });
+		return myConsole;
+	}
 }

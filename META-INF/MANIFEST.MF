@@ -26,7 +26,8 @@ Require-Bundle: org.eclipse.debug.core,
  org.palladiosimulator.pcm.dataprocessing.prolog.transformation,
  prolog4j-tuprolog,
  prolog4j-api,
- org.palladiosimulator.pcm.dataprocessing.profile
+ org.palladiosimulator.pcm.dataprocessing.profile,
+ org.eclipse.ui.console;bundle-version="3.8.500"
 Export-Package: pcm.dataprocessing.analysis.launcher.constants,
  pcm.dataprocessing.analysis.launcher.delegate,
  pcm.dataprocessing.analysis.launcher.query,

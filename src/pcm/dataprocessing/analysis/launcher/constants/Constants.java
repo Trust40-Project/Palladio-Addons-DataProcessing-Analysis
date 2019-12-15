@@ -18,6 +18,7 @@ public enum Constants {
 	ADV_ARG_AND_RETURN("Argument and Return Indexing"),
 	ADV_OPTIM_NEGATION("Optimized Negations"),
 	ADV_SHORT_ASSIGN("Short Asssignments"),
+	CONSOLE_ID("pcm.dataprocessing.analysis.launcher.console#"),
 	DEFAULT_CONFIG_VALUE("default");
 	
 
