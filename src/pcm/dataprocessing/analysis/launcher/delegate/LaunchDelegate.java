@@ -22,6 +22,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
 import org.eclipse.debug.ui.console.IConsole;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -95,6 +96,8 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 
 		resolvePaths(configuration);
 
+		resolveModels();
+		
 		this.dataFlowSystemModel = convertToSystemModel();
 
 		this.sysTranslator = getTranslator(configuration);
@@ -120,18 +123,34 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 					configuration.getAttribute(Constants.ALLOCATION_MODEL_LABEL.getConstant(), ""));
 			chModelPath = getUriFromText(
 					configuration.getAttribute(Constants.CHARACTERISTICS_MODEL_LABEL.getConstant(), ""));
-			ResourceSet rs = new ResourceSetImpl();
 
-			usageModel = (UsageModel) rs.getResource(usageModelPath, true).getContents().get(0);
-			allocationModel = (Allocation) rs.getResource(allocModelPath, true).getContents().get(0);
-			charTypeContainer = (CharacteristicTypeContainer) rs.getResource(chModelPath, true).getContents().get(0);
-
-			EcoreUtil.resolveAll(rs);
-
-		} catch (CoreException | MalformedURLException e) {
+		} catch (MalformedURLException e) {
 			throw new CoreException(
 					new Status(IStatus.ERROR, "pcm.dataprocessing.analysis.launcher", "Could not resolve paths."));
 		}
+
+	}
+
+	private void resolveModels() throws CoreException {
+
+		ResourceSet rs = new ResourceSetImpl();
+		Resource usageResource = rs.createResource(usageModelPath);
+		Resource allocationResource = rs.createResource(allocModelPath);
+		Resource charTypeResource = rs.createResource(chModelPath);
+
+		try {
+			usageResource.load(null);
+			allocationResource.load(null);
+			charTypeResource.load(null);
+		} catch (IOException exception) {
+			throw new CoreException(
+					new Status(IStatus.ERROR, "pcm.dataprocessing.analysis.launcher", "Could not resolve ressource."));
+		}
+		usageModel = (UsageModel) usageResource.getContents().get(0);
+		allocationModel = (Allocation) allocationResource.getContents().get(0);
+		charTypeContainer = (CharacteristicTypeContainer) charTypeResource.getContents().get(0);
+
+		EcoreUtil.resolveAll(rs);
 
 	}
 
@@ -162,7 +181,7 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 
 		} else {
 			throw new CoreException(
-					new Status(IStatus.ERROR, "pcm.dataprocessing.analysis.launcher", "Could not resolve models."));
+					new Status(IStatus.ERROR, "pcm.dataprocessing.analysis.launcher", "Could not transform models."));
 		}
 	}
 
@@ -275,18 +294,17 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 		Solution<Object> solution = myQuery.solve();
 		MessageConsole myConsole = findConsole(Constants.CONSOLE_ID.getConstant());
 		MessageConsoleStream out = myConsole.newMessageStream();
-		
+
 		if (!solution.isSuccess()) {
-			out.println("Query solution had success: " + solution.isSuccess()); 
+			out.println("Query solution had success: " + solution.isSuccess());
 		} else {
 			out.println(solution.get(query.getResultVars()));
-			
-			/*List<Object> solutionList = new LinkedList<Object>(solution.toList());
-			for(Object e : solutionList) {
-				out.println(e.toString());
-			}
-			*/
-		
+
+			/*
+			 * List<Object> solutionList = new LinkedList<Object>(solution.toList());
+			 * for(Object e : solutionList) { out.println(e.toString()); }
+			 */
+
 		}
 	}
 
