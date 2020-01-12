@@ -1,5 +1,6 @@
 package pcm.dataprocessing.analysis.launcher.ui;
 
+import java.io.File;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -7,6 +8,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.URIConverter;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -54,8 +59,6 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 			proversMap = sharedInstance.getProverManagerInstance().getProvers();
 
 			queryMap = sharedInstance.getQueryManagerInstance().getQueries();
-		} else {
-			// TODO error output : activator failed!
 		}
 	}
 
@@ -71,9 +74,17 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 
 	@Override
 	public boolean isValid(final ILaunchConfiguration launchConfig) {
-		return !usageText.getText().isEmpty() && !allocText.getText().isEmpty() && !chText.getText().isEmpty()
-				&& analysisCombo.getSelectionIndex() != -1;
 
+		return !usageText.getText().isEmpty() && !allocText.getText().isEmpty() && !chText.getText().isEmpty()
+				&& analysisCombo.getSelectionIndex() != -1 && prologCombo.getSelectionIndex() != -1
+				&& isURIexistent(usageText.getText()) && isURIexistent(allocText.getText())
+				&& isURIexistent(chText.getText());
+
+	}
+
+	@Override
+	public boolean canSave() {
+		return true; // Saving always possible
 	}
 
 	@Override
@@ -229,6 +240,23 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 		prologCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		setControl(comp);
 
+	}
+
+	private boolean isURIexistent(String s) {
+		URIConverter uriConverter = new ResourceSetImpl().getURIConverter();
+		URI uriFromText = URI.createURI(usageText.getText());
+		if (uriConverter.exists(uriFromText, null)) {
+			return true;
+		}
+		uriFromText = null;
+		File usageFile = new File(s);
+		if (usageFile != null && usageFile.exists()) {
+			uriFromText = URI.createFileURI(usageFile.getAbsolutePath());
+			if (uriConverter.exists(uriFromText, null)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -97,7 +98,7 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 		resolvePaths(configuration);
 
 		resolveModels();
-		
+
 		this.dataFlowSystemModel = convertToSystemModel();
 
 		this.sysTranslator = getTranslator(configuration);
@@ -298,12 +299,11 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 		if (!solution.isSuccess()) {
 			out.println("Query solution had success: " + solution.isSuccess());
 		} else {
-			out.println(solution.get(query.getResultVars()));
 
-			/*
-			 * List<Object> solutionList = new LinkedList<Object>(solution.toList());
-			 * for(Object e : solutionList) { out.println(e.toString()); }
-			 */
+			for(Entry<String, String> t : query.getResultVars().entrySet()) {
+				out.println(solution.get(t.getValue()));
+			}
+			
 
 		}
 	}
