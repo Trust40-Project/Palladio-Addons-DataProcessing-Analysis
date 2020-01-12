@@ -1,15 +1,16 @@
 package pcm.dataprocessing.analysis.launcher.query;
 
+import java.util.Map;
+
 import org.osgi.service.component.annotations.Component;
-import org.prolog4j.Query;
-import org.prolog4j.Solution;
 
 /**
  * 
  * @author Mirko Sowa
  *
  */
-@Component(immediate = true, property = { "id=pcm.dataprocessing.analysis.launcher.statequery", "name=StateVariableQuery" })
+@Component(immediate = true, property = { "id=pcm.dataprocessing.analysis.launcher.statequery",
+		"name=StateVariableQuery" })
 public class StateVariableQuery implements IQuery {
 
 	private final static String myGoal = "S=[CALLEE, CALL, OP|_], operationCall(OP, CALLEE, CALL),\r\n"
@@ -22,8 +23,8 @@ public class StateVariableQuery implements IQuery {
 	}
 
 	@Override
-	public String getResultVars() {
-		return "S"; //TODO get correct result vars
+	public Map<String, String> getResultVars() {
+		return Map.of("Svar", "S");
 	}
 
 }

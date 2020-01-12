@@ -1,5 +1,7 @@
 package pcm.dataprocessing.analysis.launcher.query;
 
+import java.util.Map;
+
 /**
  * 
  * @author Mirko Sowa
@@ -16,8 +18,8 @@ public interface IQuery {
 	/**
 	 * Gets the relevant result variables
 	 * 
-	 * @return String of result variables
+	 * @return Map of result variables: <VariableID, Variable>
 	 */
-	public String getResultVars();
+	public Map<String, String> getResultVars();
 
 }
