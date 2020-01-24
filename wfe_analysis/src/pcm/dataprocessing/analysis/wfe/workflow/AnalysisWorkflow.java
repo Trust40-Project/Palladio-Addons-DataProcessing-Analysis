@@ -7,6 +7,7 @@ import org.eclipse.emf.common.util.URI;
 import de.uka.ipd.sdq.workflow.Workflow;
 import de.uka.ipd.sdq.workflow.jobs.SequentialJob;
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.ModelLocation;
+import de.uka.ipd.sdq.workflow.mdsd.blackboard.ResourceSetPartition;
 import pcm.dataprocessing.analysis.wfe.workflow.job.SystemModelJob;
 
 /**
@@ -73,7 +74,7 @@ public class AnalysisWorkflow {
 	 * @param loc
 	 */
 	private void addToBlackboard(ModelLocation loc) {
-		AnalysisPartition part = new AnalysisPartition();
+		ResourceSetPartition part = new ResourceSetPartition();
 		part.loadModel(loc.getModelID());
 		part.resolveAllProxies();
 		myBlackboard.addPartition(loc.getPartitionID(), part);
