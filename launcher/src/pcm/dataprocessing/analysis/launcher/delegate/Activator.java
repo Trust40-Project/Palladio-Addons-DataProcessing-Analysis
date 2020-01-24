@@ -8,7 +8,7 @@ import org.palladiosimulator.pcm.dataprocessing.analysis.transformation.basic.IT
 import org.palladiosimulator.pcm.dataprocessing.analysis.transformation.basic.ITransformatorFactory;
 import org.prolog4j.manager.IProverManager;
 
-import pcm.dataprocessing.analysis.launcher.query.IQueryManager;
+import pcm.dataprocessing.analysis.wfe.query.IQueryManager;
 
 /**
  * The activator class controls the plug-in life cycle

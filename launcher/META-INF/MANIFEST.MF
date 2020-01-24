@@ -33,9 +33,5 @@ Require-Bundle: org.eclipse.debug.core,
  pcm.dataprocessing.analysis.wfe
 Export-Package: pcm.dataprocessing.analysis.launcher.constants,
  pcm.dataprocessing.analysis.launcher.delegate,
- pcm.dataprocessing.analysis.launcher.query,
  pcm.dataprocessing.analysis.launcher.ui
 Bundle-Activator: pcm.dataprocessing.analysis.launcher.delegate.Activator
-Service-Component: OSGI-INF/pcm.dataprocessing.analysis.launcher.query.QueryManager.xml,
- OSGI-INF/pcm.dataprocessing.analysis.launcher.query.StateVariableQuery.xml,
- OSGI-INF/pcm.dataprocessing.analysis.launcher.query.ReturnVariableQuery.xml

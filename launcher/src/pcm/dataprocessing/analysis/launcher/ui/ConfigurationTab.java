@@ -27,8 +27,8 @@ import org.prolog4j.ProverInformation;
 import pcm.dataprocessing.analysis.launcher.constants.Constants;
 import de.uka.ipd.sdq.workflow.launchconfig.tabs.TabHelper;
 import pcm.dataprocessing.analysis.launcher.delegate.Activator;
-import pcm.dataprocessing.analysis.launcher.query.IQuery;
-import pcm.dataprocessing.analysis.launcher.query.QueryInformation;
+import pcm.dataprocessing.analysis.wfe.query.IQuery;
+import pcm.dataprocessing.analysis.wfe.query.QueryInformation;
 
 /**
  * Main configuration tab for the launch configuration
