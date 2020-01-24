@@ -1,4 +1,4 @@
-package pcm.dataprocessing.analysis.launcher.query;
+package pcm.dataprocessing.analysis.wfe.query;
 /**
  * 
  * @author Mirko Sowa

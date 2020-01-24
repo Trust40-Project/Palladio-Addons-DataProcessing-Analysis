@@ -1,8 +1,10 @@
-package pcm.dataprocessing.analysis.launcher.query;
+package pcm.dataprocessing.analysis.wfe.query.impl;
 
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
+
+import pcm.dataprocessing.analysis.wfe.query.IQuery;
 
 /**
  * 

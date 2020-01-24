@@ -1,4 +1,4 @@
-package pcm.dataprocessing.analysis.launcher.query;
+package pcm.dataprocessing.analysis.wfe.query;
 
 import java.util.Collections;
 import java.util.HashMap;

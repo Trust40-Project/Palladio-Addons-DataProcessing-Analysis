@@ -20,15 +20,15 @@ public class AnalysisWorkflow {
 	ModelLocation allocLocation = null;
 	ModelLocation characLocation = null;
 
-	private static final String USAGE_ID = "usageID";
-	private static final String ALLOC_ID = "allocID";
-	private static final String CHARAC_ID = "characID";
 	
 	private static final String SYSTEM_ID = "systemID";
 
 
 	private AnalysisBlackboard myBlackboard = new AnalysisBlackboard();
 
+	public AnalysisWorkflow(AnalysisWorkflowConfig config) {
+		
+	}
 	/**
 	 * 
 	 */
@@ -58,37 +58,25 @@ public class AnalysisWorkflow {
 		}
 	}
 
-	/**
-	 * 
-	 * @param usageModelURI
-	 * @param allocModelURI
-	 * @param characModelURI
-	 */
-	public void setURIs(URI usageModelURI, URI allocModelURI, URI characModelURI) {
-		this.usageLocation = new ModelLocation(USAGE_ID, usageModelURI);
-		this.allocLocation = new ModelLocation(ALLOC_ID, allocModelURI);
-		this.characLocation = new ModelLocation(CHARAC_ID, characModelURI);
-
-	}
 
 	/**
 	 * 
 	 */
 	private void initBlackboard() {
-		// TODO add to loop?
-		AnalysisPartition usagePartition = new AnalysisPartition();
-		usagePartition.loadModel(usageLocation.getModelID());
-		usagePartition.resolveAllProxies();
-		myBlackboard.addPartition(USAGE_ID, usagePartition);
+		
+		addToBlackboard(allocLocation);
+		addToBlackboard(characLocation);
+		addToBlackboard(usageLocation);
+	}
+	/**
+	 * 
+	 * @param loc
+	 */
+	private void addToBlackboard(ModelLocation loc) {
+		AnalysisPartition part = new AnalysisPartition();
+		part.loadModel(loc.getModelID());
+		part.resolveAllProxies();
+		myBlackboard.addPartition(loc.getPartitionID(), part);
 
-		AnalysisPartition allocPartition = new AnalysisPartition();
-		allocPartition.loadModel(allocLocation.getModelID());
-		allocPartition.resolveAllProxies();
-		myBlackboard.addPartition(ALLOC_ID, allocPartition);
-
-		AnalysisPartition characPartition = new AnalysisPartition();
-		characPartition.resolveAllProxies();
-		characPartition.loadModel(characLocation.getModelID());
-		myBlackboard.addPartition(CHARAC_ID, characPartition);
 	}
 }

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.2.0" immediate="true" name="pcm.dataprocessing.analysis.launcher.query.QueryManager">
-   <service>
-      <provide interface="pcm.dataprocessing.analysis.launcher.query.IQueryManager"/>
-   </service>
-   <reference bind="bindQuery" cardinality="0..n" interface="pcm.dataprocessing.analysis.launcher.query.IQuery" name="Query" policy="dynamic" unbind="unbindQuery" updated="updatedQuery"/>
-   <implementation class="pcm.dataprocessing.analysis.launcher.query.QueryManager"/>
-</scr:component>

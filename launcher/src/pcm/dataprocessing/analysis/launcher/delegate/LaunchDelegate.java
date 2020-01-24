@@ -56,9 +56,9 @@ import org.prolog4j.Query;
 import org.prolog4j.Solution;
 
 import pcm.dataprocessing.analysis.launcher.delegate.Activator;
-import pcm.dataprocessing.analysis.launcher.query.IQuery;
-import pcm.dataprocessing.analysis.launcher.query.IQueryManager;
-import pcm.dataprocessing.analysis.launcher.query.QueryInformation;
+import pcm.dataprocessing.analysis.wfe.query.IQuery;
+import pcm.dataprocessing.analysis.wfe.query.IQueryManager;
+import pcm.dataprocessing.analysis.wfe.query.QueryInformation;
 import pcm.dataprocessing.analysis.wfe.workflow.AnalysisWorkflow;
 import edu.kit.ipd.sdq.dataflow.systemmodel.SystemTranslator;
 import edu.kit.ipd.sdq.dataflow.systemmodel.configuration.Configuration;
@@ -88,7 +88,7 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 	SystemTranslator sysTranslator = null;
 
 	public LaunchDelegate() {
-		new AnalysisWorkflow().launch();
+		//new AnalysisWorkflow().launch();
 	}
 
 	@Override
