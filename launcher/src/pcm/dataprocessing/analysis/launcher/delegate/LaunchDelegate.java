@@ -59,7 +59,7 @@ import pcm.dataprocessing.analysis.launcher.delegate.Activator;
 import pcm.dataprocessing.analysis.launcher.query.IQuery;
 import pcm.dataprocessing.analysis.launcher.query.IQueryManager;
 import pcm.dataprocessing.analysis.launcher.query.QueryInformation;
-import pcm.dataprocessing.analysis.launcher.workflow.LauncherWorkflow;
+import pcm.dataprocessing.analysis.wfe.workflow.AnalysisWorkflow;
 import edu.kit.ipd.sdq.dataflow.systemmodel.SystemTranslator;
 import edu.kit.ipd.sdq.dataflow.systemmodel.configuration.Configuration;
 import pcm.dataprocessing.analysis.launcher.constants.Constants;
@@ -88,7 +88,7 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 	SystemTranslator sysTranslator = null;
 
 	public LaunchDelegate() {
-		new LauncherWorkflow().launch();
+		new AnalysisWorkflow().launch();
 	}
 
 	@Override

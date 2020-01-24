@@ -1,7 +1,7 @@
 /**
  * 
  */
-package pcm.dataprocessing.analysis.launcher.workflow.job;
+package pcm.dataprocessing.analysis.wfe.workflow.job;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 

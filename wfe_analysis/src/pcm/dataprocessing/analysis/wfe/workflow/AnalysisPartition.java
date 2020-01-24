@@ -1,7 +1,7 @@
 /**
  * 
  */
-package pcm.dataprocessing.analysis.launcher.workflow;
+package pcm.dataprocessing.analysis.wfe.workflow;
 
 import org.palladiosimulator.pcm.dataprocessing.prolog.prologmodel.System;
 

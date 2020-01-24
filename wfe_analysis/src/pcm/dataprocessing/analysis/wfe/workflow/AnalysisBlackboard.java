@@ -1,4 +1,4 @@
-package pcm.dataprocessing.analysis.launcher.workflow;
+package pcm.dataprocessing.analysis.wfe.workflow;
 
 import de.uka.ipd.sdq.workflow.blackboard.Blackboard;
 /**

@@ -1,4 +1,4 @@
-package pcm.dataprocessing.analysis.launcher.workflow;
+package pcm.dataprocessing.analysis.wfe.workflow;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.ConsoleAppender;
@@ -7,14 +7,14 @@ import org.eclipse.emf.common.util.URI;
 import de.uka.ipd.sdq.workflow.Workflow;
 import de.uka.ipd.sdq.workflow.jobs.SequentialJob;
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.ModelLocation;
-import pcm.dataprocessing.analysis.launcher.workflow.job.SystemModelJob;
+import pcm.dataprocessing.analysis.wfe.workflow.job.SystemModelJob;
 
 /**
  * 
  * @author Mirko Sowa
  *
  */
-public class LauncherWorkflow {
+public class AnalysisWorkflow {
 
 	ModelLocation usageLocation = null;
 	ModelLocation allocLocation = null;
