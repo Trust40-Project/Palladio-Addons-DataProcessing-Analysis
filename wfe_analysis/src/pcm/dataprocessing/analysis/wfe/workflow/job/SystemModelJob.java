@@ -21,7 +21,6 @@ import de.uka.ipd.sdq.workflow.jobs.SequentialBlackboardInteractingJob;
 import de.uka.ipd.sdq.workflow.jobs.UserCanceledException;
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.ModelLocation;
 import pcm.dataprocessing.analysis.wfe.workflow.AnalysisBlackboard;
-import pcm.dataprocessing.analysis.wfe.workflow.AnalysisPartition;
 
 /**
  * 
@@ -32,7 +31,7 @@ public class SystemModelJob extends SequentialBlackboardInteractingJob<AnalysisB
 
 	private AnalysisBlackboard blackboard = null;
 
-	private AnalysisPartition destination = null;
+	//private AnalysisPartition destination = null;
 	private UsageModel usageModel = null;
 	private Allocation allocModel = null;
 	private CharacteristicTypeContainer characModel = null;
@@ -52,7 +51,7 @@ public class SystemModelJob extends SequentialBlackboardInteractingJob<AnalysisB
 					.getFirstContentElement(allocLoc.getModelID());
 			characModel = (CharacteristicTypeContainer) blackboard.getPartition(characLoc.getPartitionID())
 					.getFirstContentElement(characLoc.getModelID());
-			this.destination = blackboard.getPartition(goal.getPartitionID());
+			//this.destination = blackboard.getPartition(goal.getPartitionID());
 	}
 	
 
@@ -79,7 +78,7 @@ public class SystemModelJob extends SequentialBlackboardInteractingJob<AnalysisB
 
 			ITransformator myTransformator = transformatorFactory.create(registry, null);
 
-			destination.setDataFlowSystemModel(myTransformator.transform(usageModel, allocModel, characModel));
+			//destination.setDataFlowSystemModel(myTransformator.transform(usageModel, allocModel, characModel));
 
 		} else
 			throw new JobFailedException("Could not transform models");
