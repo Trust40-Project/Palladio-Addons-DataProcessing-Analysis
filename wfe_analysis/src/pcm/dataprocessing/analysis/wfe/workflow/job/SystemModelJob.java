@@ -1,4 +1,4 @@
-package pcm.dataprocessing.analysis.launcher.workflow.job;
+package pcm.dataprocessing.analysis.wfe.workflow.job;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,8 +20,8 @@ import de.uka.ipd.sdq.workflow.jobs.JobFailedException;
 import de.uka.ipd.sdq.workflow.jobs.SequentialBlackboardInteractingJob;
 import de.uka.ipd.sdq.workflow.jobs.UserCanceledException;
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.ModelLocation;
-import pcm.dataprocessing.analysis.launcher.workflow.AnalysisBlackboard;
-import pcm.dataprocessing.analysis.launcher.workflow.AnalysisPartition;
+import pcm.dataprocessing.analysis.wfe.workflow.AnalysisBlackboard;
+import pcm.dataprocessing.analysis.wfe.workflow.AnalysisPartition;
 
 /**
  * 
