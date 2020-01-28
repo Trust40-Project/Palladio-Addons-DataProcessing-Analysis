@@ -1,11 +1,8 @@
 package pcm.dataprocessing.analysis.launcher.delegate;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
-import org.palladiosimulator.pcm.dataprocessing.analysis.transformation.basic.ITransformator;
-import org.palladiosimulator.pcm.dataprocessing.analysis.transformation.basic.ITransformatorFactory;
 import org.prolog4j.manager.IProverManager;
 
 import pcm.dataprocessing.analysis.wfe.query.IQueryManager;

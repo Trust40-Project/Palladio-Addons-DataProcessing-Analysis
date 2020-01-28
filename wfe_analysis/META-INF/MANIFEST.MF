@@ -4,6 +4,7 @@ Bundle-Name: WFE
 Bundle-SymbolicName: pcm.dataprocessing.analysis.wfe
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: pcm.dataprocessing.analysis.wfe.Activator
+Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  de.uka.ipd.sdq.workflow,
@@ -12,7 +13,8 @@ Require-Bundle: org.eclipse.ui,
  org.palladiosimulator.pcm.dataprocessing,
  org.palladiosimulator.pcm.dataprocessing.analysis.transformation,
  org.palladiosimulator.pcm.dataprocessing.prolog.transformation,
- prolog4j-api
+ prolog4j-api,
+ prolog4j-manager
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Automatic-Module-Name: pcm.dataprocessing.analysis.wfe
 Bundle-ActivationPolicy: lazy

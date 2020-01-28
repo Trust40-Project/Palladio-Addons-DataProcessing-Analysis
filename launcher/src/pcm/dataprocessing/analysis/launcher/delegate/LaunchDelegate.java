@@ -60,6 +60,7 @@ import pcm.dataprocessing.analysis.wfe.query.IQuery;
 import pcm.dataprocessing.analysis.wfe.query.IQueryManager;
 import pcm.dataprocessing.analysis.wfe.query.QueryInformation;
 import pcm.dataprocessing.analysis.wfe.workflow.AnalysisWorkflow;
+import pcm.dataprocessing.analysis.wfe.workflow.AnalysisWorkflowConfig;
 import edu.kit.ipd.sdq.dataflow.systemmodel.SystemTranslator;
 import edu.kit.ipd.sdq.dataflow.systemmodel.configuration.Configuration;
 import pcm.dataprocessing.analysis.launcher.constants.Constants;
@@ -88,7 +89,7 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 	SystemTranslator sysTranslator = null;
 
 	public LaunchDelegate() {
-		//new AnalysisWorkflow().launch();
+		new AnalysisWorkflowConfig(allocModelPath, allocModelPath, allocModelPath, null);
 	}
 
 	@Override
@@ -105,9 +106,9 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 
 		this.sysTranslator = getTranslator(configuration);
 
-		this.proverFactory = getProverFactory(configuration);
+		//this.proverFactory = getProverFactory(configuration);
 
-		this.query = getAnalysisGoal(configuration);
+		//this.query = getAnalysisGoal(configuration);
 
 		evaluateModel(configuration, sysTranslator, dataFlowSystemModel);
 
@@ -220,7 +221,7 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 	 * @param launchConfig
 	 * @return
 	 * @throws CoreException
-	 */
+	 
 	private IProverFactory getProverFactory(ILaunchConfiguration launchConfig) throws CoreException {
 		IProverManager proverManager = Activator.getInstance().getProverManagerInstance();
 		IProverFactory myProverFactory = null;
@@ -251,14 +252,14 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 
 		return myProverFactory;
 
-	}
+	}*/
 
 	/**
 	 * 
 	 * @param launchConfig
 	 * @return
 	 * @throws CoreException
-	 */
+	 
 	private IQuery getAnalysisGoal(ILaunchConfiguration launchConfig) throws CoreException {
 		IQueryManager queryManager = Activator.getInstance().getQueryManagerInstance();
 		IQuery queryInput = null;
@@ -275,7 +276,7 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 
 		return queryInput;
 
-	}
+	}*/
 
 	/**
 	 * 
