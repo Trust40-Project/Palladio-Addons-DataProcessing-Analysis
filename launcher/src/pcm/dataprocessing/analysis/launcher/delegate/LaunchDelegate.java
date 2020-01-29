@@ -1,17 +1,10 @@
 package pcm.dataprocessing.analysis.launcher.delegate;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import org.eclipse.core.runtime.CoreException;
@@ -21,16 +14,11 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
-import org.eclipse.debug.ui.console.IConsole;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.MessageConsole;
@@ -45,25 +33,17 @@ import org.palladiosimulator.pcm.dataprocessing.analysis.transformation.characte
 import org.palladiosimulator.pcm.dataprocessing.analysis.transformation.characteristics.impl.DefaultReturnValueAssignmentGenerator;
 import org.palladiosimulator.pcm.dataprocessing.analysis.transformation.characteristics.impl.UserDefinedReturnValueAssignmentsGenerator;
 import org.palladiosimulator.pcm.dataprocessing.dataprocessing.characteristics.CharacteristicTypeContainer;
-import org.palladiosimulator.pcm.dataprocessing.profile.api.ProfileConstants;
 import org.palladiosimulator.pcm.usagemodel.UsageModel;
-import org.prolog4j.manager.IProverManager;
-import org.prolog4j.tuprolog.TuPrologProverFactory;
 import org.prolog4j.IProverFactory;
 import org.prolog4j.Prover;
-import org.prolog4j.ProverInformation;
 import org.prolog4j.Query;
 import org.prolog4j.Solution;
 
-import pcm.dataprocessing.analysis.launcher.delegate.Activator;
-import pcm.dataprocessing.analysis.wfe.query.IQuery;
-import pcm.dataprocessing.analysis.wfe.query.IQueryManager;
-import pcm.dataprocessing.analysis.wfe.query.QueryInformation;
-import pcm.dataprocessing.analysis.wfe.workflow.AnalysisWorkflow;
-import pcm.dataprocessing.analysis.wfe.workflow.AnalysisWorkflowConfig;
 import edu.kit.ipd.sdq.dataflow.systemmodel.SystemTranslator;
 import edu.kit.ipd.sdq.dataflow.systemmodel.configuration.Configuration;
 import pcm.dataprocessing.analysis.launcher.constants.Constants;
+import pcm.dataprocessing.analysis.wfe.query.IQuery;
+import pcm.dataprocessing.analysis.wfe.workflow.AnalysisWorkflowConfig;
 
 /**
  * Launches a given launch configuration with an usage model, an allocation
