@@ -1,11 +1,9 @@
-package pcm.dataprocessing.analysis.launcher.delegate;
+package pcm.dataprocessing.analysis.launcher;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.prolog4j.manager.IProverManager;
-
-import pcm.dataprocessing.analysis.wfe.query.IQueryManager;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -19,7 +17,6 @@ public class Activator extends AbstractUIPlugin {
 	private static Activator instance;
 
 	private IProverManager proverManager;
-	private volatile IQueryManager queryManager;
 
 	/**
 	 * The constructor
@@ -58,23 +55,6 @@ public class Activator extends AbstractUIPlugin {
 
 	public IProverManager getProverManagerInstance() {
 		return proverManager;
-	}
-
-	public IQueryManager getQueryManagerInstance() {
-		IQueryManager foundQueryManager = queryManager;
-		if (foundQueryManager == null) {
-			synchronized (this) {
-				foundQueryManager = queryManager;
-				if (foundQueryManager == null) {
-					BundleContext bundleContext = getInstance().getBundle().getBundleContext();
-					ServiceReference<IQueryManager> queryManagerReference = bundleContext
-							.getServiceReference(IQueryManager.class);
-					foundQueryManager = bundleContext.getService(queryManagerReference);
-					queryManager = foundQueryManager;
-				}
-			}
-		}
-		return foundQueryManager;
 	}
 
 }

@@ -3,8 +3,6 @@ package pcm.dataprocessing.analysis.wfe.query.impl;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
-import org.prolog4j.Query;
-import org.prolog4j.Solution;
 
 import pcm.dataprocessing.analysis.wfe.query.IQuery;
 

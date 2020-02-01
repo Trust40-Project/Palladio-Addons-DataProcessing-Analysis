@@ -24,9 +24,10 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 import org.prolog4j.IProverFactory;
 import org.prolog4j.ProverInformation;
+
+import pcm.dataprocessing.analysis.launcher.Activator;
 import pcm.dataprocessing.analysis.launcher.constants.Constants;
 import de.uka.ipd.sdq.workflow.launchconfig.tabs.TabHelper;
-import pcm.dataprocessing.analysis.launcher.delegate.Activator;
 import pcm.dataprocessing.analysis.wfe.query.IQuery;
 import pcm.dataprocessing.analysis.wfe.query.QueryInformation;
 
@@ -58,7 +59,7 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 		if (sharedInstance != null) {
 			proversMap = sharedInstance.getProverManagerInstance().getProvers();
 
-			queryMap = sharedInstance.getQueryManagerInstance().getQueries();
+			//queryMap = sharedInstance.getQueryManagerInstance().getQueries(); //TODO
 		}
 	}
 

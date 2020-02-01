@@ -68,16 +68,17 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 	org.palladiosimulator.pcm.dataprocessing.prolog.prologmodel.System dataFlowSystemModel = null;
 	SystemTranslator sysTranslator = null;
 
-	public LaunchDelegate() {
-		new AnalysisWorkflowConfig(allocModelPath, allocModelPath, allocModelPath, null);
-	}
-
+	
 	@Override
 	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor)
 			throws CoreException {
 
-		IProfileRegistry.eINSTANCE.getClass();
 
+		IProfileRegistry.eINSTANCE.getClass();
+		
+		new AnalysisWorkflowConfig(allocModelPath, allocModelPath, allocModelPath, null);
+/**
+		
 		resolvePaths(configuration);
 
 		resolveModels();
@@ -90,7 +91,7 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 
 		//this.query = getAnalysisGoal(configuration);
 
-		evaluateModel(configuration, sysTranslator, dataFlowSystemModel);
+		evaluateModel(configuration, sysTranslator, dataFlowSystemModel);*/
 
 	}
 
