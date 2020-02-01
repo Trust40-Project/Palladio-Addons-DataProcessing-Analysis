@@ -30,6 +30,7 @@ public class AnalysisWorkflowConfig {
 	private static final String ALLOC_ID = "allocID";
 	private static final String CHARAC_ID = "characID";
 
+	// TODO refractor to -> one big constructor + optionals
 	private AnalysisWorkflowConfig(URI usageModelURI, URI allocModelURI, URI characModelURI) {
 		this.usageLocation = new ModelLocation(USAGE_ID, usageModelURI);
 		this.allocLocation = new ModelLocation(ALLOC_ID, allocModelURI);

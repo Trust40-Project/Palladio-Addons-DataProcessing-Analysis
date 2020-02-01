@@ -20,7 +20,6 @@ public class Activator extends AbstractUIPlugin {
 
 	// The shared instances of both the prover and the query manager
 	private IProverManager proverManager;
-	private volatile IQueryManager queryManager;
 
 	/**
 	 * The constructor
@@ -69,20 +68,5 @@ public class Activator extends AbstractUIPlugin {
 		return Activator.instance;
 	}
 
-	public IQueryManager getQueryManagerInstance() {
-		IQueryManager foundQueryManager = queryManager;
-		if (foundQueryManager == null) {
-			synchronized (this) {
-				foundQueryManager = queryManager;
-				if (foundQueryManager == null) {
-					BundleContext bundleContext = getInstance().getBundle().getBundleContext();
-					ServiceReference<IQueryManager> queryManagerReference = bundleContext
-							.getServiceReference(IQueryManager.class);
-					foundQueryManager = bundleContext.getService(queryManagerReference);
-					queryManager = foundQueryManager;
-				}
-			}
-		}
-		return foundQueryManager;
-	}
+	
 }

@@ -3,7 +3,6 @@ package pcm.dataprocessing.analysis.wfe.workflow;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.PatternLayout;
-import org.eclipse.emf.common.util.URI;
 import de.uka.ipd.sdq.workflow.Workflow;
 import de.uka.ipd.sdq.workflow.jobs.SequentialJob;
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.ModelLocation;
@@ -36,7 +35,7 @@ public class AnalysisWorkflow {
 	public void launch() {
 		if (usageLocation.getModelID() != null && allocLocation.getModelID() != null
 				&& characLocation.getModelID() != null) {
-			// set up a basic logging configuration
+			// TODO  set up a basic logging configuration
 
 			BasicConfigurator.resetConfiguration();
 			BasicConfigurator.configure(new ConsoleAppender(new PatternLayout("%m%n")));
@@ -47,7 +46,7 @@ public class AnalysisWorkflow {
 			//add a new location for the data flow system
 			ModelLocation systemLocation = new ModelLocation(SYSTEM_ID, null);
 			
-			
+						
 			
 			SequentialJob sequence = new SequentialJob();
 			
@@ -64,7 +63,6 @@ public class AnalysisWorkflow {
 	 * 
 	 */
 	private void initBlackboard() {
-		
 		addToBlackboard(allocLocation);
 		addToBlackboard(characLocation);
 		addToBlackboard(usageLocation);
