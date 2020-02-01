@@ -1,12 +1,11 @@
 package pcm.dataprocessing.analysis.launcher.delegate;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map.Entry;
-
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.Map;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -15,43 +14,29 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.MessageConsole;
-import org.eclipse.ui.console.MessageConsoleStream;
 import org.modelversioning.emfprofile.registry.IProfileRegistry;
-import org.palladiosimulator.pcm.allocation.Allocation;
-import org.palladiosimulator.pcm.dataprocessing.analysis.transformation.basic.ITransformator;
-import org.palladiosimulator.pcm.dataprocessing.analysis.transformation.basic.ITransformatorFactory;
-import org.palladiosimulator.pcm.dataprocessing.analysis.transformation.basic.impl.TransformatorFactoryImpl;
-import org.palladiosimulator.pcm.dataprocessing.analysis.transformation.characteristics.IReturnValueAssignmentGenerator;
-import org.palladiosimulator.pcm.dataprocessing.analysis.transformation.characteristics.IReturnValueAssignmentGeneratorRegistry;
-import org.palladiosimulator.pcm.dataprocessing.analysis.transformation.characteristics.impl.DefaultReturnValueAssignmentGenerator;
-import org.palladiosimulator.pcm.dataprocessing.analysis.transformation.characteristics.impl.UserDefinedReturnValueAssignmentsGenerator;
-import org.palladiosimulator.pcm.dataprocessing.dataprocessing.characteristics.CharacteristicTypeContainer;
-import org.palladiosimulator.pcm.usagemodel.UsageModel;
 import org.prolog4j.IProverFactory;
-import org.prolog4j.Prover;
-import org.prolog4j.Query;
-import org.prolog4j.Solution;
+import org.prolog4j.ProverInformation;
+import org.prolog4j.manager.IProverManager;
 
 import edu.kit.ipd.sdq.dataflow.systemmodel.SystemTranslator;
-import edu.kit.ipd.sdq.dataflow.systemmodel.configuration.Configuration;
+import pcm.dataprocessing.analysis.launcher.Activator;
 import pcm.dataprocessing.analysis.launcher.constants.Constants;
 import pcm.dataprocessing.analysis.wfe.query.IQuery;
+import pcm.dataprocessing.analysis.wfe.query.QueryInformation;
+import pcm.dataprocessing.analysis.wfe.query.impl.IQueryManager;
+import pcm.dataprocessing.analysis.wfe.workflow.AnalysisWorkflow;
 import pcm.dataprocessing.analysis.wfe.workflow.AnalysisWorkflowConfig;
 
 /**
- * Launches a given launch configuration with an usage model, an allocation
- * model and a characteristics model.
- * 
+ * Launches a given launch configuration with an usage model,an allocation model
+ * and a characteristics model.
  * 
  * @author Mirko Sowa
- *
+ * 
  */
 public class LaunchDelegate implements ILaunchConfigurationDelegate {
 
@@ -59,39 +44,51 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 	private URI allocModelPath = null;
 	private URI chModelPath = null;
 
-	private UsageModel usageModel = null;
-	private Allocation allocationModel = null;
-	private CharacteristicTypeContainer charTypeContainer = null;
 
 	private IProverFactory proverFactory = null;
 	private IQuery query = null;
 	org.palladiosimulator.pcm.dataprocessing.prolog.prologmodel.System dataFlowSystemModel = null;
 	SystemTranslator sysTranslator = null;
 
-	
 	@Override
 	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor)
 			throws CoreException {
 
-
 		IProfileRegistry.eINSTANCE.getClass();
-		
-		new AnalysisWorkflowConfig(allocModelPath, allocModelPath, allocModelPath, null);
-/**
-		
+
+		boolean returnValueIndexing = configuration.getAttribute(Constants.ADV_ARG_AND_RETURN.getConstant(), false);
+		boolean optimNegation = configuration.getAttribute(Constants.ADV_OPTIM_NEGATION.getConstant(), false);
+		boolean shortAssign = configuration.getAttribute(Constants.ADV_SHORT_ASSIGN.getConstant(), false);
+
 		resolvePaths(configuration);
+		
+		//TODO get factory 
+		//TODO get Query
+		
+		AnalysisWorkflowConfig wfeConfig = new AnalysisWorkflowConfig(allocModelPath, allocModelPath, allocModelPath, null, null, returnValueIndexing,
+				optimNegation, shortAssign);
+		
+		AnalysisWorkflow analysisWorkflow = new AnalysisWorkflow(wfeConfig);
+		
+		analysisWorkflow.launch();
 
-		resolveModels();
-
-		this.dataFlowSystemModel = convertToSystemModel();
-
-		this.sysTranslator = getTranslator(configuration);
-
-		//this.proverFactory = getProverFactory(configuration);
-
-		//this.query = getAnalysisGoal(configuration);
-
-		evaluateModel(configuration, sysTranslator, dataFlowSystemModel);*/
+		
+		/**
+		 * 
+		 * resolvePaths(configuration);
+		 * 
+		 * resolveModels();
+		 * 
+		 * this.dataFlowSystemModel = convertToSystemModel();
+		 * 
+		 * this.sysTranslator = getTranslator(configuration);
+		 * 
+		 * //this.proverFactory = getProverFactory(configuration);
+		 * 
+		 * //this.query = getAnalysisGoal(configuration);
+		 * 
+		 * evaluateModel(configuration, sysTranslator, dataFlowSystemModel);
+		 **/
 
 	}
 
@@ -116,7 +113,7 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 
 	}
 
-	private void resolveModels() throws CoreException {
+	/*private void resolveModels() throws CoreException {
 
 		ResourceSet rs = new ResourceSetImpl();
 		Resource usageResource = rs.createResource(usageModelPath);
@@ -137,72 +134,16 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 
 		EcoreUtil.resolveAll(rs);
 
-	}
+	}*/
 
-	/**
-	 * Converts the given models to a compound system model, which is returned.
-	 * 
-	 * @return the system model extracted from the given models
-	 * @throws CoreException if the models could not be resolved to a working model
-	 */
-	private org.palladiosimulator.pcm.dataprocessing.prolog.prologmodel.System convertToSystemModel()
-			throws CoreException {
-		if (usageModel != null && allocationModel != null && charTypeContainer != null) {
-			IReturnValueAssignmentGeneratorRegistry registry = new IReturnValueAssignmentGeneratorRegistry() {
-				@Override
-				public Iterable<IReturnValueAssignmentGenerator> getGenerators() {
-					Collection<IReturnValueAssignmentGenerator> generators = new ArrayList<>();
-					generators.add(new DefaultReturnValueAssignmentGenerator());
-					generators.add(new UserDefinedReturnValueAssignmentsGenerator());
-					return generators;
-				}
-			};
 
-			ITransformatorFactory transformatorFactory = new TransformatorFactoryImpl();
-
-			ITransformator myTransformator = transformatorFactory.create(registry, null);
-
-			return myTransformator.transform(usageModel, allocationModel, charTypeContainer);
-
-		} else {
-			throw new CoreException(
-					new Status(IStatus.ERROR, "pcm.dataprocessing.analysis.launcher", "Could not transform models."));
-		}
-	}
-
-	/**
-	 * Gets a system translator with parameters specified in the launch
-	 * configuration.
-	 * 
-	 * @param configuration
-	 * @return
-	 * @throws CoreException
-	 */
-	private SystemTranslator getTranslator(ILaunchConfiguration launchConfig) throws CoreException {
-
-		Configuration noOptimizationConfiguration = new Configuration();
-
-		boolean shortAssign = false;
-		boolean optimNegation = false;
-		boolean returnValueIndexing = false;
-
-		returnValueIndexing = launchConfig.getAttribute(Constants.ADV_ARG_AND_RETURN.getConstant(), false);
-		optimNegation = launchConfig.getAttribute(Constants.ADV_OPTIM_NEGATION.getConstant(), false);
-		shortAssign = launchConfig.getAttribute(Constants.ADV_SHORT_ASSIGN.getConstant(), false);
-
-		noOptimizationConfiguration.setArgumentAndReturnValueIndexing(returnValueIndexing);
-		noOptimizationConfiguration.setOptimizedNegations(optimNegation);
-		noOptimizationConfiguration.setShorterAssignments(shortAssign);
-
-		return new SystemTranslator(noOptimizationConfiguration);
-	}
 
 	/**
 	 * 
 	 * @param launchConfig
 	 * @return
 	 * @throws CoreException
-	 
+	 */
 	private IProverFactory getProverFactory(ILaunchConfiguration launchConfig) throws CoreException {
 		IProverManager proverManager = Activator.getInstance().getProverManagerInstance();
 		IProverFactory myProverFactory = null;
@@ -233,14 +174,14 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 
 		return myProverFactory;
 
-	}*/
+	}
 
 	/**
 	 * 
 	 * @param launchConfig
 	 * @return
 	 * @throws CoreException
-	 
+	 */
 	private IQuery getAnalysisGoal(ILaunchConfiguration launchConfig) throws CoreException {
 		IQueryManager queryManager = Activator.getInstance().getQueryManagerInstance();
 		IQuery queryInput = null;
@@ -257,39 +198,6 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 
 		return queryInput;
 
-	}*/
-
-	/**
-	 * 
-	 * @param launchConfig
-	 * @param sysTranslator
-	 * @param dataFlowSystemModel
-	 * @throws CoreException
-	 */
-	private void evaluateModel(ILaunchConfiguration launchConfig, SystemTranslator sysTranslator,
-			org.palladiosimulator.pcm.dataprocessing.prolog.prologmodel.System dataFlowSystemModel)
-			throws CoreException {
-
-		String testingCode = sysTranslator.translate(dataFlowSystemModel).getCode();
-
-		Prover myProver = proverFactory.createProver();
-		myProver.addTheory(testingCode);
-
-		Query myQuery = myProver.query(query.getQuery());
-		Solution<Object> solution = myQuery.solve();
-		MessageConsole myConsole = findConsole(Constants.CONSOLE_ID.getConstant());
-		MessageConsoleStream out = myConsole.newMessageStream();
-
-		if (!solution.isSuccess()) {
-			out.println("Query solution had success: " + solution.isSuccess());
-		} else {
-
-			for(Entry<String, String> t : query.getResultVars().entrySet()) {
-				out.println(solution.get(t.getValue()));
-			}
-			
-
-		}
 	}
 
 	/**

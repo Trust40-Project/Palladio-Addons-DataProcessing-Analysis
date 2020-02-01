@@ -14,7 +14,6 @@ import org.palladiosimulator.pcm.dataprocessing.analysis.transformation.characte
 import org.palladiosimulator.pcm.dataprocessing.analysis.transformation.characteristics.impl.UserDefinedReturnValueAssignmentsGenerator;
 import org.palladiosimulator.pcm.dataprocessing.dataprocessing.characteristics.CharacteristicTypeContainer;
 import org.palladiosimulator.pcm.usagemodel.UsageModel;
-
 import de.uka.ipd.sdq.workflow.jobs.CleanupFailedException;
 import de.uka.ipd.sdq.workflow.jobs.JobFailedException;
 import de.uka.ipd.sdq.workflow.jobs.SequentialBlackboardInteractingJob;
@@ -31,7 +30,6 @@ public class SystemModelJob extends SequentialBlackboardInteractingJob<AnalysisB
 
 	private AnalysisBlackboard blackboard = null;
 
-	//private AnalysisPartition destination = null;
 	private UsageModel usageModel = null;
 	private Allocation allocModel = null;
 	private CharacteristicTypeContainer characModel = null;
@@ -77,8 +75,8 @@ public class SystemModelJob extends SequentialBlackboardInteractingJob<AnalysisB
 			ITransformatorFactory transformatorFactory = new TransformatorFactoryImpl();
 
 			ITransformator myTransformator = transformatorFactory.create(registry, null);
-
-			//destination.setDataFlowSystemModel(myTransformator.transform(usageModel, allocModel, characModel));
+				
+			blackboard.setDataFlowSystemModel(myTransformator.transform(usageModel, allocModel, characModel));
 
 		} else
 			throw new JobFailedException("Could not transform models");
@@ -86,7 +84,7 @@ public class SystemModelJob extends SequentialBlackboardInteractingJob<AnalysisB
 
 	@Override
 	public void cleanup(IProgressMonitor monitor) throws CleanupFailedException {
-		// TODO Auto-generated method stub
+		// TODO what's to cleanup?
 
 	}
 
