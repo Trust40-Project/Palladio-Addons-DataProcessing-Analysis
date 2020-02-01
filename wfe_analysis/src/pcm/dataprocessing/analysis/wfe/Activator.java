@@ -4,7 +4,8 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.prolog4j.manager.IProverManager;
-import pcm.dataprocessing.analysis.wfe.query.IQueryManager;
+
+import pcm.dataprocessing.analysis.wfe.query.impl.IQueryManager;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -25,12 +26,15 @@ public class Activator extends AbstractUIPlugin {
 	 * The constructor
 	 */
 	public Activator() {
+	
 	}
 
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		setInstance(instance);
+		ServiceReference<IProverManager> proverManagerReference = context.getServiceReference(IProverManager.class);
+		this.proverManager = context.getService(proverManagerReference);
 	}
 
 	@Override

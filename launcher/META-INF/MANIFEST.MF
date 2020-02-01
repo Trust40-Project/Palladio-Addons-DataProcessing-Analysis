@@ -33,4 +33,4 @@ Require-Bundle: org.eclipse.debug.core,
 Export-Package: pcm.dataprocessing.analysis.launcher.constants,
  pcm.dataprocessing.analysis.launcher.delegate,
  pcm.dataprocessing.analysis.launcher.ui
-Bundle-Activator: pcm.dataprocessing.analysis.launcher.delegate.Activator
+Bundle-Activator: pcm.dataprocessing.analysis.launcher.Activator

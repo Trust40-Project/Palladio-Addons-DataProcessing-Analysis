@@ -10,6 +10,8 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 
+import pcm.dataprocessing.analysis.wfe.query.impl.IQueryManager;
+
 /**
  * Implementation of the IQueryManger interface
  * 
