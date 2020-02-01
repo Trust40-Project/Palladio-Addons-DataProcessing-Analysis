@@ -41,7 +41,7 @@ public class EvaluateModelJob extends SequentialBlackboardInteractingJob<Analysi
 		Prover myProver = blackboard.getProverFactory().createProver();
 		myProver.addTheory(testingCode);
 
-		Query myQuery = myProver.query(blackboard.getQuery().getQuery()); // TODO refractor name
+		Query myQuery = myProver.query(blackboard.getQuery().getQuery()); // TODO refractor method name?
 		Solution<Object> solution = myQuery.solve();
 		// MessageConsole myConsole = findConsole(Constants.CONSOLE_ID.getConstant());
 		// MessageConsoleStream out = myConsole.newMessageStream();
@@ -59,14 +59,13 @@ public class EvaluateModelJob extends SequentialBlackboardInteractingJob<Analysi
 
 	@Override
 	public void cleanup(IProgressMonitor monitor) throws CleanupFailedException {
-		// TODO Auto-generated method stub
+		// TODO what's to cleanup?
 
 	}
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Evaluate translated system model with a prover and dedicated goal.";
 	}
 
 }

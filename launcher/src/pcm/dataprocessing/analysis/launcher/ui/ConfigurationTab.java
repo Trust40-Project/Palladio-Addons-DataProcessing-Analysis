@@ -58,8 +58,7 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 		Activator sharedInstance = Activator.getInstance();
 		if (sharedInstance != null) {
 			proversMap = sharedInstance.getProverManagerInstance().getProvers();
-
-			//queryMap = sharedInstance.getQueryManagerInstance().getQueries(); //TODO
+			queryMap = sharedInstance.getQueryManagerInstance().getQueries();
 		}
 	}
 
