@@ -26,7 +26,6 @@ Require-Bundle: org.eclipse.debug.core,
  org.palladiosimulator.pcm.dataprocessing.profile,
  org.eclipse.ui.console;bundle-version="3.8.500",
  org.eclipse.emf.common,
- de.uka.ipd.sdq.workflow.mdsd,
  pcm.dataprocessing.analysis.wfe,
  org.prolog4j.api;bundle-version="1.0.0",
  org.prolog4j.manager;bundle-version="1.0.0"

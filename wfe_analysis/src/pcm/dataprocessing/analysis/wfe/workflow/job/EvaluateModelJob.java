@@ -4,7 +4,6 @@
 package pcm.dataprocessing.analysis.wfe.workflow.job;
 
 import java.util.Map.Entry;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.prolog4j.Prover;
 import org.prolog4j.Query;
