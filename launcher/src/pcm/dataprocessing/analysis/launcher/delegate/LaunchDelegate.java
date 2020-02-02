@@ -2,9 +2,6 @@ package pcm.dataprocessing.analysis.launcher.delegate;
 
 import java.io.File;
 import java.net.MalformedURLException;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.Map;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -21,7 +18,6 @@ import org.modelversioning.emfprofile.registry.IProfileRegistry;
 import org.prolog4j.IProverFactory;
 import org.prolog4j.ProverInformation;
 import org.prolog4j.manager.IProverManager;
-
 import edu.kit.ipd.sdq.dataflow.systemmodel.SystemTranslator;
 import pcm.dataprocessing.analysis.launcher.Activator;
 import pcm.dataprocessing.analysis.launcher.constants.Constants;
@@ -44,9 +40,6 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 	private URI allocModelPath = null;
 	private URI chModelPath = null;
 
-
-	private IProverFactory proverFactory = null;
-	private IQuery query = null;
 	org.palladiosimulator.pcm.dataprocessing.prolog.prologmodel.System dataFlowSystemModel = null;
 	SystemTranslator sysTranslator = null;
 
@@ -61,34 +54,14 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 		boolean shortAssign = configuration.getAttribute(Constants.ADV_SHORT_ASSIGN.getConstant(), false);
 
 		resolvePaths(configuration);
-		
-		//TODO get factory 
-		//TODO get Query
-		
-		AnalysisWorkflowConfig wfeConfig = new AnalysisWorkflowConfig(allocModelPath, allocModelPath, allocModelPath, null, null, returnValueIndexing,
-				optimNegation, shortAssign);
-		
-		AnalysisWorkflow analysisWorkflow = new AnalysisWorkflow(wfeConfig);
-		
-		analysisWorkflow.launch();
 
-		
-		/**
-		 * 
-		 * resolvePaths(configuration);
-		 * 
-		 * resolveModels();
-		 * 
-		 * this.dataFlowSystemModel = convertToSystemModel();
-		 * 
-		 * this.sysTranslator = getTranslator(configuration);
-		 * 
-		 * //this.proverFactory = getProverFactory(configuration);
-		 * 
-		 * //this.query = getAnalysisGoal(configuration);
-		 * 
-		 * evaluateModel(configuration, sysTranslator, dataFlowSystemModel);
-		 **/
+		AnalysisWorkflowConfig wfeConfig = new AnalysisWorkflowConfig(usageModelPath, allocModelPath, chModelPath,
+				getAnalysisGoal(configuration), getProverFactory(configuration), returnValueIndexing, optimNegation,
+				shortAssign);
+
+		AnalysisWorkflow analysisWorkflow = new AnalysisWorkflow(wfeConfig);
+
+		analysisWorkflow.launch();
 
 	}
 
@@ -113,30 +86,26 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 
 	}
 
-	/*private void resolveModels() throws CoreException {
-
-		ResourceSet rs = new ResourceSetImpl();
-		Resource usageResource = rs.createResource(usageModelPath);
-		Resource allocationResource = rs.createResource(allocModelPath);
-		Resource charTypeResource = rs.createResource(chModelPath);
-
-		try {
-			usageResource.load(null);
-			allocationResource.load(null);
-			charTypeResource.load(null);
-		} catch (IOException exception) {
-			throw new CoreException(
-					new Status(IStatus.ERROR, "pcm.dataprocessing.analysis.launcher", "Could not resolve ressource."));
-		}
-		usageModel = (UsageModel) usageResource.getContents().get(0);
-		allocationModel = (Allocation) allocationResource.getContents().get(0);
-		charTypeContainer = (CharacteristicTypeContainer) charTypeResource.getContents().get(0);
-
-		EcoreUtil.resolveAll(rs);
-
-	}*/
-
-
+	/*
+	 * private void resolveModels() throws CoreException {
+	 * 
+	 * ResourceSet rs = new ResourceSetImpl(); Resource usageResource =
+	 * rs.createResource(usageModelPath); Resource allocationResource =
+	 * rs.createResource(allocModelPath); Resource charTypeResource =
+	 * rs.createResource(chModelPath);
+	 * 
+	 * try { usageResource.load(null); allocationResource.load(null);
+	 * charTypeResource.load(null); } catch (IOException exception) { throw new
+	 * CoreException( new Status(IStatus.ERROR,
+	 * "pcm.dataprocessing.analysis.launcher", "Could not resolve ressource.")); }
+	 * usageModel = (UsageModel) usageResource.getContents().get(0); allocationModel
+	 * = (Allocation) allocationResource.getContents().get(0); charTypeContainer =
+	 * (CharacteristicTypeContainer) charTypeResource.getContents().get(0);
+	 * 
+	 * EcoreUtil.resolveAll(rs);
+	 * 
+	 * }
+	 */
 
 	/**
 	 * 
@@ -150,25 +119,9 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 
 		String prologConfig = launchConfig.getAttribute(Constants.PROLOG_INTERPRETER_LABEL.getConstant(), "default");
 
-		if (!prologConfig.equals("default")) {
-			for (Map.Entry<ProverInformation, IProverFactory> entry : proverManager.getProvers().entrySet()) {
-				if (entry.getKey().getId().equals(prologConfig)) {
-					myProverFactory = entry.getValue();
-				}
-			}
-		} else {
-			LinkedList<ProverInformation> availableProversInformation = new LinkedList<ProverInformation>(
-					proverManager.getProvers().keySet());
-			for (ProverInformation i : availableProversInformation) {
-				if (i.needsNativeExecutables()) {
-					availableProversInformation.remove(i);
-				}
-			}
-			Comparator<ProverInformation> compareByName = Comparator.comparing(e -> e.getName());
-			Collections.sort(availableProversInformation, compareByName);
-
-			if (availableProversInformation.get(0) != null) {
-				myProverFactory = proverManager.getProvers().get(availableProversInformation.get(0));
+		for (Map.Entry<ProverInformation, IProverFactory> entry : proverManager.getProvers().entrySet()) {
+			if (entry.getKey().getId().equals(prologConfig)) {
+				myProverFactory = entry.getValue();
 			}
 		}
 
@@ -219,6 +172,7 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 
 	}
 
+	
 	private MessageConsole findConsole(String name) {
 		ConsolePlugin plugin = ConsolePlugin.getDefault();
 		IConsoleManager conMan = plugin.getConsoleManager();

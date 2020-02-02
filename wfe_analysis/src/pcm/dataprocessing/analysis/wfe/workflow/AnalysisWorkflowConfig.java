@@ -38,8 +38,6 @@ public class AnalysisWorkflowConfig {
 	private static final String ALLOC_ID = "allocID";
 	private static final String CHARAC_ID = "characID";
 
-	// TODO null check
-	// TODO get standard proverFactory!
 	/**
 	 * 
 	 * @param usageModelURI
@@ -52,7 +50,8 @@ public class AnalysisWorkflowConfig {
 	 * @param shortAssign
 	 */
 	public AnalysisWorkflowConfig(URI usageModelURI, URI allocModelURI, URI characModelURI, IQuery query,
-			IProverFactory proverFactory, boolean returnValueIndexing, boolean optimNegation, boolean shortAssign) {
+			IProverFactory proverFactory, boolean returnValueIndexing, boolean optimNegation, boolean shortAssign)
+			throws IllegalArgumentException {
 		if (usageLocation != null && allocLocation != null && characLocation != null && query != null) {
 			this.usageLocation = new ModelLocation(USAGE_ID, usageModelURI);
 			this.allocLocation = new ModelLocation(ALLOC_ID, allocModelURI);
@@ -62,10 +61,11 @@ public class AnalysisWorkflowConfig {
 
 			if (proverFactory != null) {
 				this.proverFactory = proverFactory;
+			} else {
+				this.findStandardProver();
 			}
 		} else {
-			this.findStandardProver();
-			// TODO throw exception
+			throw new IllegalArgumentException();
 		}
 	}
 
