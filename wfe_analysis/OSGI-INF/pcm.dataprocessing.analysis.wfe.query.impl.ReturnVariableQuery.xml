@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="pcm.dataprocessing.analysis.wfe.query.impl.ReturnVariableQuery">
-   <property name="id" value="pcm.dataprocessing.analysis.launcher.returnquery"/>
-   <property name="name" value="ReturnVariableQuery"/>
-   <service>
-      <provide interface="pcm.dataprocessing.analysis.wfe.query.IQuery"/>
-   </service>
-   <implementation class="pcm.dataprocessing.analysis.wfe.query.impl.ReturnVariableQuery"/>
-</scr:component>
