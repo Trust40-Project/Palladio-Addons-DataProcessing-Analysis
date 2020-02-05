@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin
+>
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            delegate="org.palladiosimulator.pcm.dataprocessing.analysis.executor.launcher.delegate.LaunchDelegate"
+            id="pcm.dataprocessing.analysis.launcher.config"
+            modes="run"
+            name="Trust 4.0 Dataprocessing"
+            public="true">
+      </launchConfigurationType>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+      <launchConfigurationTypeImage
+            configTypeID="pcm.dataprocessing.analysis.launcher.config"
+            icon="icons/trust40_icon_small.png"
+            id="pcm.dataprocessing.analysis.launcher.trust40icon">
+      </launchConfigurationTypeImage>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            class="org.palladiosimulator.pcm.dataprocessing.analysis.executor.launcher.ui.LaunchConfigurationTabGroup"
+            id="pcm.dataprocessing.analysis.launcher.tabGroup"
+            type="pcm.dataprocessing.analysis.launcher.config">
+         <launchMode
+               mode="run"
+               perspective="org.eclipse.debug.ui.DebugPerspective">
+         </launchMode>
+      </launchConfigurationTabGroup>
+   </extension>
+
+   
+  
+</plugin>

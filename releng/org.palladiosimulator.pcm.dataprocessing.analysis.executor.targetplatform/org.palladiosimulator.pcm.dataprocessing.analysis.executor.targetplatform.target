@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.8"?><target name="org.palladiosimulator.pcm.dataprocessing Target Platform" sequenceNumber="1">
+<locations>
+
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit">
+<unit id="org.eclipse.swt" version="3.112.0.v20190904-0609"/>
+<repository location="http://download.eclipse.org/releases/2019-09"/>
+</location>
+
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="release" refresh="true">
+<unit id="de.uka.ipd.sdq.identifier.feature.feature.group" version="tbd"/>
+<repository location="https://updatesite.palladio-simulator.com/palladio-core-commons/releases/latest/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="nightly" refresh="true">
+<unit id="de.uka.ipd.sdq.identifier.feature.feature.group" version="tbd"/>
+<repository location="https://updatesite.palladio-simulator.com/palladio-core-commons/nightly/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="release" refresh="true">
+<unit id="de.uka.ipd.sdq.workflow.feature.mdsd.feature.group" version="tbd"/>
+<repository location="https://updatesite.palladio-simulator.com/palladio-supporting-workflowengine/releases/latest/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="nightly" refresh="true">
+<unit id="de.uka.ipd.sdq.workflow.feature.mdsd.feature.group" version="tbd"/>
+<repository location="https://updatesite.palladio-simulator.com/palladio-supporting-workflowengine/nightly/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="release" refresh="true">
+<unit id="org.palladiosimulator.pcm" version="tbd"/>
+<unit id="org.palladiosimulator.pcm.resources" version="tbd"/>
+<repository location="https://updatesite.palladio-simulator.com/palladio-core-pcm/releases/latest/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="nightly" refresh="true">
+<unit id="org.palladiosimulator.pcm" version="tbd"/>
+<unit id="org.palladiosimulator.pcm.resources" version="tbd"/>
+<repository location="https://updatesite.palladio-simulator.com/palladio-core-pcm/nightly/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="release" refresh="true">
+<unit id="org.modelversioning.emfprofile.core.feature.feature.group" version="tbd"/>
+<repository location="https://updatesite.palladio-simulator.com/palladio-thirdparty-emfprofiles/releases/latest/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="nightly" refresh="true">
+<unit id="org.modelversioning.emfprofile.core.feature.feature.group" version="tbd"/>
+<repository location="https://updatesite.palladio-simulator.com/palladio-thirdparty-emfprofiles/nightly/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="release" refresh="true">
+<unit id="org.palladiosimulator.mdsdprofiles.feature.feature.group" version="tbd"/>
+<repository location="https://updatesite.palladio-simulator.com/palladio-supporting-mdsdprofiles/releases/latest/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="nightly" refresh="true">
+<unit id="org.palladiosimulator.mdsdprofiles.feature.feature.group" version="tbd"/>
+<repository location="https://updatesite.palladio-simulator.com/palladio-supporting-mdsdprofiles/nightly/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="release" refresh="true">
+<unit id="org.prolog4j.core.feature.feature.group" version="tbd"/>
+<repository location="https://updatesite.palladio-simulator.com/palladio-supporting-prolog4j/releases/latest/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="nightly" refresh="true">
+<unit id="org.prolog4j.core.feature.feature.group" version="tbd"/>
+<repository location="https://updatesite.palladio-simulator.com/palladio-supporting-prolog4j/nightly/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="release" refresh="true">
+<unit id="org.palladiosimulator.pcm.dataprocessing.model.feature.feature.group" version="tbd"/>
+<repository location="https://updatesite.palladio-simulator.com/palladio-addons-dataprocessing-metamodel/releases/latest/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="nightly" refresh="true">
+<unit id="org.palladiosimulator.pcm.dataprocessing.model.feature.feature.group" version="tbd"/>
+<repository location="https://updatesite.palladio-simulator.com/palladio-addons-dataprocessing-metamodel/nightly/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="release" refresh="true">
+<unit id="org.palladiosimulator.pcm.dataprocessing.prolog.feature.feature.group" version="tbd"/>
+<repository location="https://updatesite.palladio-simulator.com/palladio-addons-dataprocessing-prologmodel/releases/latest/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="nightly" refresh="true">
+<unit id="org.palladiosimulator.pcm.dataprocessing.prolog.feature.feature.group" version="tbd"/>
+<repository location="https://updatesite.palladio-simulator.com/palladio-addons-dataprocessing-prologmodel/nightly/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="release" refresh="true">
+<unit id="org.palladiosimulator.pcm.dataprocessing.analysis.transformation.rbac.feature.feature.group" version="tbd"/>
+<repository location="https://updatesite.palladio-simulator.com/palladio-addons-dataprocessing-analysistransformation/releases/latest/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="nightly" refresh="true">
+<unit id="org.palladiosimulator.pcm.dataprocessing.analysis.transformation.rbac.feature.feature.group" version="tbd"/>
+<repository location="https://updatesite.palladio-simulator.com/palladio-addons-dataprocessing-analysistransformation/nightly/"/>
+</location>
+</locations>
+</target>
