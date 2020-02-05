@@ -52,7 +52,7 @@ public class AnalysisWorkflowConfig {
 	public AnalysisWorkflowConfig(URI usageModelURI, URI allocModelURI, URI characModelURI, IQuery query,
 			IProverFactory proverFactory, boolean returnValueIndexing, boolean optimNegation, boolean shortAssign)
 			throws IllegalArgumentException {
-		if (usageLocation != null && allocLocation != null && characLocation != null && query != null) {
+		if (usageModelURI != null && allocModelURI != null && characModelURI != null && query != null) {
 			this.usageLocation = new ModelLocation(USAGE_ID, usageModelURI);
 			this.allocLocation = new ModelLocation(ALLOC_ID, allocModelURI);
 			this.characLocation = new ModelLocation(CHARAC_ID, characModelURI);
