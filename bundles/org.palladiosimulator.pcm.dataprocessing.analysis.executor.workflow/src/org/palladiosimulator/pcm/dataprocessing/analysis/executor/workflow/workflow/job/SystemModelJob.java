@@ -23,6 +23,10 @@ public class SystemModelJob extends SequentialBlackboardInteractingJob<AnalysisB
 
 	private AnalysisBlackboard blackboard = null;
 
+	private final ModelLocation usageLoc;
+	private final ModelLocation allocLoc;
+	private final ModelLocation characLoc;
+
 	private UsageModel usageModel = null;
 	private Allocation allocModel = null;
 	private CharacteristicTypeContainer characModel = null;
@@ -34,17 +38,11 @@ public class SystemModelJob extends SequentialBlackboardInteractingJob<AnalysisB
 	 * @param characLoc
 	 * @param goal
 	 */
-	public SystemModelJob(ModelLocation usageLoc, ModelLocation allocLoc, ModelLocation characLoc,
-			ModelLocation goal) {
-			usageModel = (UsageModel) blackboard.getPartition(usageLoc.getPartitionID())
-					.getFirstContentElement(usageLoc.getModelID());
-			allocModel = (Allocation) blackboard.getPartition(allocLoc.getPartitionID())
-					.getFirstContentElement(allocLoc.getModelID());
-			characModel = (CharacteristicTypeContainer) blackboard.getPartition(characLoc.getPartitionID())
-					.getFirstContentElement(characLoc.getModelID());
-			//this.destination = blackboard.getPartition(goal.getPartitionID());
+	public SystemModelJob(ModelLocation usageLoc, ModelLocation allocLoc, ModelLocation characLoc, ModelLocation goal) {
+		this.usageLoc = usageLoc;
+		this.allocLoc = allocLoc;
+		this.characLoc = characLoc;
 	}
-	
 
 	@Override
 	public void setBlackboard(AnalysisBlackboard blackboard) {
@@ -54,6 +52,12 @@ public class SystemModelJob extends SequentialBlackboardInteractingJob<AnalysisB
 
 	@Override
 	public void execute(IProgressMonitor monitor) throws JobFailedException, UserCanceledException {
+		usageModel = (UsageModel) blackboard.getPartition(usageLoc.getPartitionID())
+				.getFirstContentElement(usageLoc.getModelID());
+		allocModel = (Allocation) blackboard.getPartition(allocLoc.getPartitionID())
+				.getFirstContentElement(allocLoc.getModelID());
+		characModel = (CharacteristicTypeContainer) blackboard.getPartition(characLoc.getPartitionID())
+				.getFirstContentElement(characLoc.getModelID());
 		if (usageModel != null && allocModel != null && characModel != null) {
 			ITransformator myTransformator = ITransformatorFactory.getInstance().create();
 			blackboard.setDataFlowSystemModel(myTransformator.transform(usageModel, allocModel, characModel));

@@ -68,9 +68,11 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 	}
 
 	/**
+	 * Gets the URI from text inputs.
 	 * 
-	 * @param configuration
-	 * @throws CoreException
+	 * @param configuration launch configuration with text inputs
+	 * @throws CoreException if URI malformed
+	 * 
 	 */
 	private void resolvePaths(ILaunchConfiguration configuration) throws CoreException {
 
@@ -88,32 +90,12 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 
 	}
 
-	/*
-	 * private void resolveModels() throws CoreException {
-	 * 
-	 * ResourceSet rs = new ResourceSetImpl(); Resource usageResource =
-	 * rs.createResource(usageModelPath); Resource allocationResource =
-	 * rs.createResource(allocModelPath); Resource charTypeResource =
-	 * rs.createResource(chModelPath);
-	 * 
-	 * try { usageResource.load(null); allocationResource.load(null);
-	 * charTypeResource.load(null); } catch (IOException exception) { throw new
-	 * CoreException( new Status(IStatus.ERROR,
-	 * "pcm.dataprocessing.analysis.launcher", "Could not resolve ressource.")); }
-	 * usageModel = (UsageModel) usageResource.getContents().get(0); allocationModel
-	 * = (Allocation) allocationResource.getContents().get(0); charTypeContainer =
-	 * (CharacteristicTypeContainer) charTypeResource.getContents().get(0);
-	 * 
-	 * EcoreUtil.resolveAll(rs);
-	 * 
-	 * }
-	 */
-
 	/**
+	 * Gets a prover factory interface from a launch configuration
 	 * 
-	 * @param launchConfig
-	 * @return
-	 * @throws CoreException
+	 * @param launchConfig Launch configuration
+	 * @return a {@link IProverFactory}
+	 * @throws CoreException if attribute cannot be found in launch configuration
 	 */
 	private IProverFactory getProverFactory(ILaunchConfiguration launchConfig) throws CoreException {
 		IProverManager proverManager = Activator.getInstance().getProverManagerInstance();
@@ -126,16 +108,16 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 				myProverFactory = entry.getValue();
 			}
 		}
-
 		return myProverFactory;
 
 	}
 
 	/**
+	 * Gets a query interface from a launch configuration
 	 * 
-	 * @param launchConfig
-	 * @return
-	 * @throws CoreException
+	 * @param launchConfig Launch configuration
+	 * @return {@link IQuery}
+	 * @throws CoreException if attribute cannot be found in launch configuration
 	 */
 	private IQuery getAnalysisGoal(ILaunchConfiguration launchConfig) throws CoreException {
 		IQueryManager queryManager = Activator.getInstance().getQueryManagerInstance();
@@ -156,10 +138,11 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 	}
 
 	/**
+	 * Gets an {@link URI} from a String
 	 * 
-	 * @param text
-	 * @return
-	 * @throws MalformedURLException
+	 * @param text String of URI
+	 * @return {@link URI}
+	 * @throws MalformedURLException if URI not of right format
 	 */
 	private URI getUriFromText(String text) throws MalformedURLException {
 
@@ -174,7 +157,6 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 
 	}
 
-	
 	private MessageConsole findConsole(String name) {
 		ConsolePlugin plugin = ConsolePlugin.getDefault();
 		IConsoleManager conMan = plugin.getConsoleManager();

@@ -15,7 +15,7 @@ import de.uka.ipd.sdq.workflow.jobs.SequentialBlackboardInteractingJob;
 import de.uka.ipd.sdq.workflow.jobs.UserCanceledException;
 
 /**
- * @author mirko
+ * @author Mirko Sowa
  *
  */
 public class EvaluateModelJob extends SequentialBlackboardInteractingJob<AnalysisBlackboard> {

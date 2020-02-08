@@ -12,66 +12,83 @@ import de.uka.ipd.sdq.workflow.mdsd.blackboard.ModelLocation;
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.ResourceSetPartition;
 
 /**
+ * This workflow enables to evaluate models as to a query goal.
  * 
  * @author Mirko Sowa
  *
  */
 public class AnalysisWorkflow {
 
-	ModelLocation usageLocation = null;
-	ModelLocation allocLocation = null;
-	ModelLocation characLocation = null;
+	private final ModelLocation usageLocation;
+	private final ModelLocation allocLocation;
+	private final ModelLocation characLocation;
 
-	
 	private static final String SYSTEM_ID = "systemID";
-
-
+	// gets a new AnalysisBlackboard
 	private AnalysisBlackboard myBlackboard = new AnalysisBlackboard();
 
-	public AnalysisWorkflow(AnalysisWorkflowConfig config) {
-		
-	}
 	/**
+	 * Constructor for an AnalysisWorkflow, takes an AnalysisWorkflowConfig as
+	 * parameter
 	 * 
+	 * @param config AnalysisWorkflowConfig encapsulates most of the attributes needed
+	 *               for a launch
+	 */
+	public AnalysisWorkflow(AnalysisWorkflowConfig config) {
+		this.usageLocation = config.getUsageLocation();
+		this.allocLocation = config.getAllocLocation();
+		this.characLocation = config.getCharacLocation();
+	}
+
+	/**
+	 * Method to launch the Workflow
 	 */
 	public void launch() {
 		if (usageLocation.getModelID() != null && allocLocation.getModelID() != null
 				&& characLocation.getModelID() != null) {
-			// TODO  set up a basic logging configuration?
+			// TODO set up a basic logging configuration?
 
 			BasicConfigurator.resetConfiguration();
 			BasicConfigurator.configure(new ConsoleAppender(new PatternLayout("%m%n")));
 
 			// initialise blackboard
 			initBlackboard();
-			
-			//add a new location for the data flow system
+
+			// add a new location for the data flow system
 			ModelLocation systemLocation = new ModelLocation(SYSTEM_ID, null);
-					
-			
+
+			// creates a new sequence of jobs
 			SequentialJob sequence = new SequentialJob();
 			
-			sequence.add(new SystemModelJob(usageLocation, allocLocation, characLocation, systemLocation));
-			sequence.add(new EvaluateModelJob());
+			SystemModelJob sysJob = new SystemModelJob(usageLocation, allocLocation, characLocation, systemLocation);
+			sysJob.setBlackboard(myBlackboard);
+			sequence.add(sysJob);
+			
+			EvaluateModelJob evalJob = new EvaluateModelJob();
+			evalJob.setBlackboard(myBlackboard);
+			sequence.add(evalJob);
 
 			Workflow myWorkflow = new Workflow(sequence);
+
+			// executes sequence
 			myWorkflow.run();
 
 		}
 	}
 
-
 	/**
-	 * 
+	 * Initialises the blackboard with the model locations
 	 */
 	private void initBlackboard() {
 		addToBlackboard(allocLocation);
 		addToBlackboard(characLocation);
 		addToBlackboard(usageLocation);
 	}
+
 	/**
+	 * Adds a model location to the blackboard
 	 * 
-	 * @param loc
+	 * @param loc ModelLocation to be added
 	 */
 	private void addToBlackboard(ModelLocation loc) {
 		ResourceSetPartition part = new ResourceSetPartition();

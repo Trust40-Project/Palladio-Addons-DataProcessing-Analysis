@@ -19,35 +19,48 @@ import edu.kit.ipd.sdq.dataflow.systemmodel.SystemTranslator;
 import edu.kit.ipd.sdq.dataflow.systemmodel.configuration.Configuration;
 
 /**
+ * This class encapsulates most of the attributes needed for an
+ * {@link AnalysisWorkflow}.
+ * 
  * @author Mirko Sowa
  *
  */
 public class AnalysisWorkflowConfig {
 
-	ModelLocation usageLocation = null;
-	ModelLocation allocLocation = null;
-	ModelLocation characLocation = null;
+	private ModelLocation usageLocation = null;
+	private ModelLocation allocLocation = null;
+	private ModelLocation characLocation = null;
 
-	IQuery query = null;
+	private IQuery query = null;
 
-	IProverFactory proverFactory = null;
+	private IProverFactory proverFactory = null;
 
-	SystemTranslator sysTrans = null;
+	private SystemTranslator sysTrans = null;
 
 	private static final String USAGE_ID = "usageID";
 	private static final String ALLOC_ID = "allocID";
 	private static final String CHARAC_ID = "characID";
 
 	/**
+	 * Constructor for the {@link AnalysisWorkflowConfig}
 	 * 
-	 * @param usageModelURI
-	 * @param allocModelURI
-	 * @param characModelURI
-	 * @param query
-	 * @param proverFactory
-	 * @param returnValueIndexing
-	 * @param optimNegation
-	 * @param shortAssign
+	 * @param usageModelURI       URI of the location of the Usage Model, mandatory
+	 * @param allocModelURI       URI of the location of the Allocation Model,
+	 *                            mandatory
+	 * @param characModelURI      URI of the location of the Characteristics Model,
+	 *                            mandatory
+	 * @param query               Query that will evaluate the system model,
+	 *                            mandatory
+	 * @param proverFactory       ProverFactory to build dedicated prover, optional,
+	 *                            will choose a Prover according to target platform
+	 * @param returnValueIndexing Boolean if value indexing should be returned in
+	 *                            query, optional, default false
+	 * @param optimNegation       Boolean if Negations should be optimised in query,
+	 *                            optional, default false
+	 * @param shortAssign         Boolean if short assignments should be used in
+	 *                            query, optional, default false
+	 * 
+	 * @throws IllegalArgumentException if one of the mandatory arguments is null
 	 */
 	public AnalysisWorkflowConfig(URI usageModelURI, URI allocModelURI, URI characModelURI, IQuery query,
 			IProverFactory proverFactory, boolean returnValueIndexing, boolean optimNegation, boolean shortAssign)
@@ -81,10 +94,13 @@ public class AnalysisWorkflowConfig {
 	}
 
 	/**
+	 * Configures the SystemTranslator with the given parameters
 	 * 
-	 * @param returnValueIndexing
-	 * @param optimNegation
-	 * @param shortAssign
+	 * @param returnValueIndexing Boolean if value indexing should be returned in
+	 *                            query
+	 * @param optimNegation       Boolean if Negations should be optimised in query
+	 * @param shortAssign         Boolean, if short assignments should be used in
+	 *                            query
 	 */
 	private void setTranslator(boolean returnValueIndexing, boolean optimNegation, boolean shortAssign) {
 
@@ -97,6 +113,9 @@ public class AnalysisWorkflowConfig {
 		sysTrans = new SystemTranslator(noOptimizationConfiguration);
 	}
 
+	/**
+	 * Gets a standard prover according to the target platform
+	 */
 	private void findStandardProver() {
 		IProverManager proverManager = Activator.getInstance().getProverManagerInstance();
 
@@ -115,6 +134,8 @@ public class AnalysisWorkflowConfig {
 		}
 
 	}
+
+	// package-private getters
 
 	ModelLocation getUsageLocation() {
 		return usageLocation;

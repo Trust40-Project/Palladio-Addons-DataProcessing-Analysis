@@ -1,5 +1,6 @@
 package org.palladiosimulator.pcm.dataprocessing.analysis.executor.workflow.query;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,8 +36,7 @@ public class QueryManager implements IQueryManager {
 	}
 
 	public void unbindQuery(IQuery input) {
-		// FIXME IQuery is the value, not the key
-		availableQueries.remove(input);
+		availableQueries.values().removeAll(Collections.singleton(input));
 	}
 
 	public void updatedQuery(IQuery input, Map<String, String> serviceProperties) {
