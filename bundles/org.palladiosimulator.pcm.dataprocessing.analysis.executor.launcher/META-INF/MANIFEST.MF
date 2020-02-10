@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-ActivationPolicy: lazy
 Bundle-Name: Launcher
 Bundle-SymbolicName: org.palladiosimulator.pcm.dataprocessing.analysis.executor.launcher;singleton:=true
-Bundle-Version: 0.0.0
+Bundle-Version: 1.0.0.qualifier
 Automatic-Module-Name: pcm.dataprocessing.analysis.launcher
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.palladiosimulator.pcm.dataprocessing;bundle-version="0.1.0",
