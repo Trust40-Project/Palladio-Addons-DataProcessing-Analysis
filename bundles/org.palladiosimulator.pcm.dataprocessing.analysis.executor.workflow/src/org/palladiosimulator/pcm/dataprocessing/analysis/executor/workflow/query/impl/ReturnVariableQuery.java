@@ -7,6 +7,8 @@ import org.palladiosimulator.pcm.dataprocessing.analysis.executor.workflow.query
 
 /**
  * 
+ * 
+ * 
  * @author Mirko Sowa
  *
  */
@@ -18,7 +20,7 @@ public class ReturnVariableQuery implements IQuery {
 			+ "accessRights(OP, R),\r\n" + "isNoRoleAuthorizedReturnVal(R, S, RETVAL).";
 
 	@Override
-	public String getQuery() {
+	public String getQueryString() {
 		return myGoal;
 	}
 

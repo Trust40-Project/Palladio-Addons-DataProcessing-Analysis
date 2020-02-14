@@ -40,18 +40,14 @@ public class EvaluateModelJob extends SequentialBlackboardInteractingJob<Analysi
 		Prover myProver = blackboard.getProverFactory().createProver();
 		myProver.addTheory(testingCode);
 
-		Query myQuery = myProver.query(blackboard.getQuery().getQuery()); // TODO refractor method name?
+		Query myQuery = myProver.query(blackboard.getQuery().getQueryString());
 		Solution<Object> solution = myQuery.solve();
-		// MessageConsole myConsole = findConsole(Constants.CONSOLE_ID.getConstant());
-		// MessageConsoleStream out = myConsole.newMessageStream();
 
-		if (!solution.isSuccess()) {
-			// out.println("Query solution had success: " + solution.isSuccess());
-		} else {
+		if (solution.isSuccess()) {
 
-			for (Entry<String, String> t : blackboard.getQuery().getResultVars().entrySet()) {
-				// out.println(solution.get(t.getValue()));
-			}
+			//for (Entry<String, String> t : blackboard.getQuery().getResultVars().entrySet()) {
+				//TODO iterate over solutions an store in blackboard for output on UI
+			//}
 
 		}
 	}

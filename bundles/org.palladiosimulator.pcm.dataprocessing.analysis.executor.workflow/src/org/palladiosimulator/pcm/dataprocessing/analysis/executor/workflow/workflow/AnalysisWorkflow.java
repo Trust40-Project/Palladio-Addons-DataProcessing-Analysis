@@ -3,10 +3,12 @@ package org.palladiosimulator.pcm.dataprocessing.analysis.executor.workflow.work
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.PatternLayout;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.palladiosimulator.pcm.dataprocessing.analysis.executor.workflow.workflow.job.EvaluateModelJob;
 import org.palladiosimulator.pcm.dataprocessing.analysis.executor.workflow.workflow.job.SystemModelJob;
 
 import de.uka.ipd.sdq.workflow.Workflow;
+import de.uka.ipd.sdq.workflow.WorkflowExceptionHandler;
 import de.uka.ipd.sdq.workflow.jobs.SequentialJob;
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.ModelLocation;
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.ResourceSetPartition;
@@ -23,21 +25,26 @@ public class AnalysisWorkflow {
 	private final ModelLocation allocLocation;
 	private final ModelLocation characLocation;
 
+	private IProgressMonitor myMonitor;
+
 	private static final String SYSTEM_ID = "systemID";
 	// gets a new AnalysisBlackboard
 	private AnalysisBlackboard myBlackboard = new AnalysisBlackboard();
 
 	/**
-	 * Constructor for an AnalysisWorkflow, takes an AnalysisWorkflowConfig as
-	 * parameter
+	 * Constructor for an AnalysisWorkflow, takes an AnalysisWorkflowConfig and a
+	 * IProgressMonitor as parameter
 	 * 
-	 * @param config AnalysisWorkflowConfig encapsulates most of the attributes needed
-	 *               for a launch
+	 * @param config  {@link AnalysisWorkflow} encapsulates most of the attributes
+	 *                needed for a launch
+	 * @param monitor {@link IProgressMonitor} to track progress and end of this
+	 *                workflow
 	 */
-	public AnalysisWorkflow(AnalysisWorkflowConfig config) {
+	public AnalysisWorkflow(AnalysisWorkflowConfig config, IProgressMonitor monitor) {
 		this.usageLocation = config.getUsageLocation();
 		this.allocLocation = config.getAllocLocation();
 		this.characLocation = config.getCharacLocation();
+		this.myMonitor = monitor;
 	}
 
 	/**
@@ -46,10 +53,10 @@ public class AnalysisWorkflow {
 	public void launch() {
 		if (usageLocation.getModelID() != null && allocLocation.getModelID() != null
 				&& characLocation.getModelID() != null) {
+			
 			// TODO set up a basic logging configuration?
-
-			BasicConfigurator.resetConfiguration();
-			BasicConfigurator.configure(new ConsoleAppender(new PatternLayout("%m%n")));
+			//BasicConfigurator.resetConfiguration();
+			//BasicConfigurator.configure(new ConsoleAppender(new PatternLayout("%m%n")));
 
 			// initialise blackboard
 			initBlackboard();
@@ -59,16 +66,16 @@ public class AnalysisWorkflow {
 
 			// creates a new sequence of jobs
 			SequentialJob sequence = new SequentialJob();
-			
+
 			SystemModelJob sysJob = new SystemModelJob(usageLocation, allocLocation, characLocation, systemLocation);
 			sysJob.setBlackboard(myBlackboard);
 			sequence.add(sysJob);
-			
+
 			EvaluateModelJob evalJob = new EvaluateModelJob();
 			evalJob.setBlackboard(myBlackboard);
 			sequence.add(evalJob);
 
-			Workflow myWorkflow = new Workflow(sequence);
+			Workflow myWorkflow = new Workflow(sequence, myMonitor, new WorkflowExceptionHandler(false));
 
 			// executes sequence
 			myWorkflow.run();

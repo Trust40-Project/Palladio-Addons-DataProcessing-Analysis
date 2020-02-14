@@ -19,7 +19,7 @@ public class StateVariableQuery implements IQuery {
 			+ "accessRights(CALLEE, R),\r\n" + "isNoRoleAuthorizedStateVal(R, S, CALLEE, SVAL).";
 
 	@Override
-	public String getQuery() {
+	public String getQueryString() {
 		return myGoal;
 	}
 

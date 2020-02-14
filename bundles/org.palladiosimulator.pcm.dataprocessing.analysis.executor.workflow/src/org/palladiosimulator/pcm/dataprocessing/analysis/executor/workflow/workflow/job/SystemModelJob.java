@@ -47,20 +47,23 @@ public class SystemModelJob extends SequentialBlackboardInteractingJob<AnalysisB
 	@Override
 	public void setBlackboard(AnalysisBlackboard blackboard) {
 		this.blackboard = blackboard;
-
-	}
-
-	@Override
-	public void execute(IProgressMonitor monitor) throws JobFailedException, UserCanceledException {
 		usageModel = (UsageModel) blackboard.getPartition(usageLoc.getPartitionID())
 				.getFirstContentElement(usageLoc.getModelID());
 		allocModel = (Allocation) blackboard.getPartition(allocLoc.getPartitionID())
 				.getFirstContentElement(allocLoc.getModelID());
 		characModel = (CharacteristicTypeContainer) blackboard.getPartition(characLoc.getPartitionID())
 				.getFirstContentElement(characLoc.getModelID());
+
+	}
+
+	@Override
+	public void execute(IProgressMonitor monitor) throws JobFailedException, UserCanceledException {
+
 		if (usageModel != null && allocModel != null && characModel != null) {
 			ITransformator myTransformator = ITransformatorFactory.getInstance().create();
-			blackboard.setDataFlowSystemModel(myTransformator.transform(usageModel, allocModel, characModel));
+			org.palladiosimulator.pcm.dataprocessing.prolog.prologmodel.System transformed = myTransformator
+					.transform(usageModel, allocModel, characModel);
+			blackboard.setDataFlowSystemModel(transformed);
 		} else
 			throw new JobFailedException("Could not transform models");
 	}

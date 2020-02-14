@@ -13,7 +13,7 @@ public interface IQuery {
 	 * Gets the attached query 
 	 * @return String of the Prolog Query
 	 */
-	public String getQuery();
+	public String getQueryString();
 
 	/**
 	 * Gets the relevant result variables

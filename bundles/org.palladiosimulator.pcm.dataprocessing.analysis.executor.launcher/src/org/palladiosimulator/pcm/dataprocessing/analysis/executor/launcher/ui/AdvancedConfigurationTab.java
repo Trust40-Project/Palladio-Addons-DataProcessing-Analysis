@@ -109,10 +109,7 @@ public class AdvancedConfigurationTab extends AbstractLaunchConfigurationTab {
 		return Constants.ADV_TAB_NAME.getConstant();
 	}
 
-	/**
-	 * 
-	 * @return
-	 */
+	
 	private boolean getTrueFalse(Button[] array) {
 		if (array.length <= 2) {
 			return array[1].getSelection();
@@ -120,10 +117,7 @@ public class AdvancedConfigurationTab extends AbstractLaunchConfigurationTab {
 		return false;
 	}
 
-	/**
-	 * 
-	 * @return
-	 */
+	
 	private void setTrueFalse(Button[] array, boolean value) {
 		if (array.length <= 2) {
 			if (value) {

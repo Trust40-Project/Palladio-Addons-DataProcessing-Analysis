@@ -12,6 +12,7 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.net4j.util.om.monitor.SubMonitor;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.MessageConsole;
@@ -60,8 +61,8 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 		AnalysisWorkflowConfig wfeConfig = new AnalysisWorkflowConfig(usageModelPath, allocModelPath, chModelPath,
 				getAnalysisGoal(configuration), getProverFactory(configuration), returnValueIndexing, optimNegation,
 				shortAssign);
-
-		AnalysisWorkflow analysisWorkflow = new AnalysisWorkflow(wfeConfig);
+//FIXME
+		AnalysisWorkflow analysisWorkflow = new AnalysisWorkflow(wfeConfig, null);
 
 		analysisWorkflow.launch();
 

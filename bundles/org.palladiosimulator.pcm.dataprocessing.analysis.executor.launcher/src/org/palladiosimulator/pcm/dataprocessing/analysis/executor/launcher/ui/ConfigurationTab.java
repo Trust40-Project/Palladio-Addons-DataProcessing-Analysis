@@ -174,8 +174,7 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 		final ModifyListener modifyListener = new ModifyListener() {
 
 			public void modifyText(ModifyEvent e) {
-				// ConfigurationTab.this.setDirty(true);
-				// ConfigurationTab.this.updateLaunchConfigurationDialog();
+				//ignored
 			}
 		};
 
