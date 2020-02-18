@@ -1,14 +1,15 @@
 package org.palladiosimulator.pcm.dataprocessing.analysis.executor.launcher.delegate;
 
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.palladiosimulator.pcm.dataprocessing.analysis.executor.workflow.workflow.AnalysisBlackboard;
 import org.palladiosimulator.pcm.dataprocessing.analysis.executor.workflow.workflow.AnalysisWorkflow;
 import org.palladiosimulator.pcm.dataprocessing.analysis.executor.workflow.workflow.AnalysisWorkflowConfig;
 
+import de.uka.ipd.sdq.workflow.Workflow;
+import de.uka.ipd.sdq.workflow.jobs.SequentialJob;
+
 public class WorkflowExecuter {
 	private AnalysisWorkflowConfig wfeConfig;
 	private AnalysisBlackboard blackboard;
-	private IProgressMonitor progressMonitor = null;
 
 	public WorkflowExecuter(AnalysisWorkflowConfig wfeConfig) {
 		this.wfeConfig = wfeConfig;
@@ -17,11 +18,17 @@ public class WorkflowExecuter {
 	}
 
 	public void execute() {
-		AnalysisWorkflow analysisWorkflow = new AnalysisWorkflow(wfeConfig, progressMonitor); //FIXME PROGRESSMONITOR is null
+		SequentialJob combinedJob = new SequentialJob();
+		AnalysisWorkflow analysisWorkflow = new AnalysisWorkflow(wfeConfig); 
 		analysisWorkflow.setBlackboard(blackboard);
-		analysisWorkflow.launch();
-		analysisWorkflow.add(new OutputJob());
-
+		combinedJob.add(analysisWorkflow);
+		
+		OutputJob outs = new OutputJob();
+		outs.setBlackboard(blackboard);
+		combinedJob.add(outs);
+		
+		Workflow w = new Workflow(combinedJob);
+		w.run();
 	}
 
 }

@@ -5,6 +5,7 @@ package org.palladiosimulator.pcm.dataprocessing.analysis.executor.workflow.work
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.palladiosimulator.pcm.dataprocessing.analysis.executor.workflow.workflow.AnalysisBlackboard;
+import org.palladiosimulator.pcm.dataprocessing.prolog.prologmodel.System;
 import org.prolog4j.Prover;
 import org.prolog4j.Query;
 import org.prolog4j.Solution;
@@ -22,7 +23,6 @@ public class EvaluateModelJob extends SequentialBlackboardInteractingJob<Analysi
 
 	public EvaluateModelJob() {
 		super("Evaluate translated system model with a prover and dedicated goal.");
-
 	}
 
 	@Override
@@ -33,8 +33,8 @@ public class EvaluateModelJob extends SequentialBlackboardInteractingJob<Analysi
 
 	@Override
 	public void execute(IProgressMonitor monitor) throws JobFailedException, UserCanceledException {
-
-		String testingCode = blackboard.getSystemTranslator().translate(blackboard.getDataFlowSystemModel()).getCode();
+		System dataFlowSystem = blackboard.getDataFlowSystemModel();
+		String testingCode = blackboard.getSystemTranslator().translate(dataFlowSystem).getCode();
 
 		Prover myProver = blackboard.getProverFactory().createProver();
 		myProver.addTheory(testingCode);

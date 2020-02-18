@@ -45,8 +45,7 @@ public class OutputJob implements IJob {
 
 	@Override
 	public void cleanup(IProgressMonitor monitor) throws CleanupFailedException {
-		// TODO Auto-generated method stub
-
+		// ignored
 	}
 
 	@Override

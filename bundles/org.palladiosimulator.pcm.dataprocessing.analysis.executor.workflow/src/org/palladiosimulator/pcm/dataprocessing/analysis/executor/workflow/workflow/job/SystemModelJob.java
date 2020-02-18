@@ -7,8 +7,6 @@ import org.palladiosimulator.pcm.dataprocessing.analysis.transformation.basic.IT
 import org.palladiosimulator.pcm.dataprocessing.analysis.transformation.basic.ITransformatorFactory;
 import org.palladiosimulator.pcm.dataprocessing.dataprocessing.characteristics.CharacteristicTypeContainer;
 import org.palladiosimulator.pcm.usagemodel.UsageModel;
-
-import de.uka.ipd.sdq.workflow.jobs.CleanupFailedException;
 import de.uka.ipd.sdq.workflow.jobs.JobFailedException;
 import de.uka.ipd.sdq.workflow.jobs.SequentialBlackboardInteractingJob;
 import de.uka.ipd.sdq.workflow.jobs.UserCanceledException;
@@ -31,6 +29,8 @@ public class SystemModelJob extends SequentialBlackboardInteractingJob<AnalysisB
 	private Allocation allocModel = null;
 	private CharacteristicTypeContainer characModel = null;
 
+	private final String partitionID;
+
 	/**
 	 * 
 	 * @param usageLoc
@@ -38,8 +38,9 @@ public class SystemModelJob extends SequentialBlackboardInteractingJob<AnalysisB
 	 * @param characLoc
 	 * @param goal
 	 */
-	public SystemModelJob(ModelLocation usageLoc, ModelLocation allocLoc, ModelLocation characLoc, ModelLocation goal) {
+	public SystemModelJob(ModelLocation usageLoc, ModelLocation allocLoc, ModelLocation characLoc) {
 		super("Get System from Models");
+		this.partitionID = usageLoc.getPartitionID();
 		this.usageLoc = usageLoc;
 		this.allocLoc = allocLoc;
 		this.characLoc = characLoc;
@@ -48,11 +49,9 @@ public class SystemModelJob extends SequentialBlackboardInteractingJob<AnalysisB
 	@Override
 	public void setBlackboard(AnalysisBlackboard blackboard) {
 		this.blackboard = blackboard;
-		usageModel = (UsageModel) blackboard.getPartition(usageLoc.getPartitionID())
-				.getFirstContentElement(usageLoc.getModelID());
-		allocModel = (Allocation) blackboard.getPartition(allocLoc.getPartitionID())
-				.getFirstContentElement(allocLoc.getModelID());
-		characModel = (CharacteristicTypeContainer) blackboard.getPartition(characLoc.getPartitionID())
+		usageModel = (UsageModel) blackboard.getPartition(partitionID).getFirstContentElement(usageLoc.getModelID());
+		allocModel = (Allocation) blackboard.getPartition(partitionID).getFirstContentElement(allocLoc.getModelID());
+		characModel = (CharacteristicTypeContainer) blackboard.getPartition(partitionID)
 				.getFirstContentElement(characLoc.getModelID());
 
 	}
@@ -68,8 +67,5 @@ public class SystemModelJob extends SequentialBlackboardInteractingJob<AnalysisB
 		} else
 			throw new JobFailedException("Could not transform models");
 	}
-
-	
-	
 
 }
