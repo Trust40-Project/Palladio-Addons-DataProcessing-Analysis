@@ -1,9 +1,9 @@
 package org.palladiosimulator.pcm.dataprocessing.analysis.executor.workflow.workflow;
 
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.palladiosimulator.pcm.dataprocessing.analysis.executor.workflow.query.IQuery;
 import org.palladiosimulator.pcm.dataprocessing.prolog.prologmodel.System;
 import org.prolog4j.IProverFactory;
+import org.prolog4j.Solution;
 
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.MDSDBlackboard;
 import edu.kit.ipd.sdq.dataflow.systemmodel.SystemTranslator;
@@ -22,7 +22,7 @@ public class AnalysisBlackboard extends MDSDBlackboard {
 	SystemTranslator systemTranslator = null;
 	IProverFactory proverFactory = null;
 	IQuery query = null;
-
+	Solution<Object> solution = null;
 	/**
 	 * @return the dataFlowSystemModel
 	 */
@@ -49,6 +49,14 @@ public class AnalysisBlackboard extends MDSDBlackboard {
 	 */
 	public IQuery getQuery() {
 		return query;
+	}
+	
+	/**
+	 * gets the solution, can be null 
+	 * @return the solution of the query
+	 */
+	public Solution<Object> getSolution() {
+		return solution;
 	}
 
 	/**
@@ -78,6 +86,14 @@ public class AnalysisBlackboard extends MDSDBlackboard {
 	 */
 	public void setQuery(IQuery query) {
 		this.query = query;
+	}
+	
+	/**
+	 * 
+	 * @param solution solution to set
+	 */
+	public void setSolution(Solution<Object> solution) {
+		this.solution = solution;
 	}
 
 }

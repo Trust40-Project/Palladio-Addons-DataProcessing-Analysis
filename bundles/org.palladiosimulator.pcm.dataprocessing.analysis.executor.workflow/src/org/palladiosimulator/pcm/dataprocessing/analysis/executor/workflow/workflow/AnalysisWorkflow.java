@@ -1,15 +1,12 @@
 package org.palladiosimulator.pcm.dataprocessing.analysis.executor.workflow.workflow;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.PatternLayout;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.palladiosimulator.pcm.dataprocessing.analysis.executor.workflow.workflow.job.EvaluateModelJob;
 import org.palladiosimulator.pcm.dataprocessing.analysis.executor.workflow.workflow.job.SystemModelJob;
-
 import de.uka.ipd.sdq.workflow.Workflow;
 import de.uka.ipd.sdq.workflow.WorkflowExceptionHandler;
-import de.uka.ipd.sdq.workflow.jobs.SequentialJob;
+import de.uka.ipd.sdq.workflow.jobs.SequentialBlackboardInteractingJob;
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.ModelLocation;
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.ResourceSetPartition;
 
@@ -19,7 +16,9 @@ import de.uka.ipd.sdq.workflow.mdsd.blackboard.ResourceSetPartition;
  * @author Mirko Sowa
  *
  */
-public class AnalysisWorkflow {
+public class AnalysisWorkflow extends SequentialBlackboardInteractingJob<AnalysisBlackboard> {
+
+	private static final String NAME = "AnalysisWorkflow";
 
 	private final ModelLocation usageLocation;
 	private final ModelLocation allocLocation;
@@ -28,12 +27,10 @@ public class AnalysisWorkflow {
 	private IProgressMonitor myMonitor;
 
 	private static final String SYSTEM_ID = "systemID";
-	// gets a new AnalysisBlackboard
-	private AnalysisBlackboard myBlackboard = new AnalysisBlackboard();
 
 	/**
 	 * Constructor for an AnalysisWorkflow, takes an AnalysisWorkflowConfig and a
-	 * IProgressMonitor as parameter
+	 * IProgressMonitor as parameter. Also set the blackboard.
 	 * 
 	 * @param config  {@link AnalysisWorkflow} encapsulates most of the attributes
 	 *                needed for a launch
@@ -41,6 +38,7 @@ public class AnalysisWorkflow {
 	 *                workflow
 	 */
 	public AnalysisWorkflow(AnalysisWorkflowConfig config, IProgressMonitor monitor) {
+		super(NAME);
 		this.usageLocation = config.getUsageLocation();
 		this.allocLocation = config.getAllocLocation();
 		this.characLocation = config.getCharacLocation();
@@ -53,30 +51,32 @@ public class AnalysisWorkflow {
 	public void launch() {
 		if (usageLocation.getModelID() != null && allocLocation.getModelID() != null
 				&& characLocation.getModelID() != null) {
+
 			
 			// TODO set up a basic logging configuration?
-			//BasicConfigurator.resetConfiguration();
-			//BasicConfigurator.configure(new ConsoleAppender(new PatternLayout("%m%n")));
+			// BasicConfigurator.resetConfiguration();
+			// BasicConfigurator.configure(new ConsoleAppender(new PatternLayout("%m%n")));
 
 			// initialise blackboard
+			if (this.getBlackboard() == null) {
+				this.setBlackboard(new AnalysisBlackboard());
+			}
 			initBlackboard();
 
 			// add a new location for the data flow system
 			ModelLocation systemLocation = new ModelLocation(SYSTEM_ID, null);
 
 			// creates a new sequence of jobs
-			SequentialJob sequence = new SequentialJob();
+			// SequentialJob sequence = new SequentialJob();
 
 			SystemModelJob sysJob = new SystemModelJob(usageLocation, allocLocation, characLocation, systemLocation);
-			sysJob.setBlackboard(myBlackboard);
-			sequence.add(sysJob);
-
+			sysJob.setBlackboard(getBlackboard());
+			this.add(sysJob);
 			EvaluateModelJob evalJob = new EvaluateModelJob();
-			evalJob.setBlackboard(myBlackboard);
-			sequence.add(evalJob);
+			evalJob.setBlackboard(getBlackboard());
+			this.add(evalJob);
 
-			Workflow myWorkflow = new Workflow(sequence, myMonitor, new WorkflowExceptionHandler(false));
-
+			Workflow myWorkflow = new Workflow(this, myMonitor, new WorkflowExceptionHandler(false));
 			// executes sequence
 			myWorkflow.run();
 
@@ -99,9 +99,9 @@ public class AnalysisWorkflow {
 	 */
 	private void addToBlackboard(ModelLocation loc) {
 		ResourceSetPartition part = new ResourceSetPartition();
-		part.loadModel(loc.getModelID());
+		Resource r = part.loadModel(loc.getModelID());
 		part.resolveAllProxies();
-		myBlackboard.addPartition(loc.getPartitionID(), part);
+		getBlackboard().addPartition(loc.getPartitionID(), part); // FIXME, Model not loaded yet);
 
 	}
 }

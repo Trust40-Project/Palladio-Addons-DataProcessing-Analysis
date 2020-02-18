@@ -37,9 +37,8 @@ public class AnalysisWorkflowConfig {
 
 	private SystemTranslator sysTrans = null;
 
-	private static final String USAGE_ID = "usageID";
-	private static final String ALLOC_ID = "allocID";
-	private static final String CHARAC_ID = "characID";
+	private static final String RESOURCE_ID = "resourceID";
+
 
 	/**
 	 * Constructor for the {@link AnalysisWorkflowConfig}
@@ -66,9 +65,9 @@ public class AnalysisWorkflowConfig {
 			IProverFactory proverFactory, boolean returnValueIndexing, boolean optimNegation, boolean shortAssign)
 			throws IllegalArgumentException {
 		if (usageModelURI != null && allocModelURI != null && characModelURI != null && query != null) {
-			this.usageLocation = new ModelLocation(USAGE_ID, usageModelURI);
-			this.allocLocation = new ModelLocation(ALLOC_ID, allocModelURI);
-			this.characLocation = new ModelLocation(CHARAC_ID, characModelURI);
+			this.usageLocation = new ModelLocation(RESOURCE_ID, usageModelURI);
+			this.allocLocation = new ModelLocation(RESOURCE_ID, allocModelURI);
+			this.characLocation = new ModelLocation(RESOURCE_ID, characModelURI);
 			this.query = query;
 			this.setTranslator(returnValueIndexing, optimNegation, shortAssign);
 

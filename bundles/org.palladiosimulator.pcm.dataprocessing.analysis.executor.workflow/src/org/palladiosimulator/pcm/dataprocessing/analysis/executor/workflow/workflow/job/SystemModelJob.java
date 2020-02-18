@@ -39,6 +39,7 @@ public class SystemModelJob extends SequentialBlackboardInteractingJob<AnalysisB
 	 * @param goal
 	 */
 	public SystemModelJob(ModelLocation usageLoc, ModelLocation allocLoc, ModelLocation characLoc, ModelLocation goal) {
+		super("Get System from Models");
 		this.usageLoc = usageLoc;
 		this.allocLoc = allocLoc;
 		this.characLoc = characLoc;
@@ -68,15 +69,7 @@ public class SystemModelJob extends SequentialBlackboardInteractingJob<AnalysisB
 			throw new JobFailedException("Could not transform models");
 	}
 
-	@Override
-	public void cleanup(IProgressMonitor monitor) throws CleanupFailedException {
-		// TODO what's to cleanup?
-
-	}
-
-	@Override
-	public String getName() {
-		return "Get System from Models";
-	}
+	
+	
 
 }

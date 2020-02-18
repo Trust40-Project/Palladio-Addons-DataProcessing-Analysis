@@ -3,7 +3,6 @@ package org.palladiosimulator.pcm.dataprocessing.analysis.executor.launcher.dele
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.Map;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -12,22 +11,16 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.net4j.util.om.monitor.SubMonitor;
-import org.eclipse.ui.console.ConsolePlugin;
-import org.eclipse.ui.console.IConsoleManager;
-import org.eclipse.ui.console.MessageConsole;
 import org.modelversioning.emfprofile.registry.IProfileRegistry;
 import org.palladiosimulator.pcm.dataprocessing.analysis.executor.launcher.Activator;
 import org.palladiosimulator.pcm.dataprocessing.analysis.executor.launcher.constants.Constants;
 import org.palladiosimulator.pcm.dataprocessing.analysis.executor.workflow.query.IQuery;
 import org.palladiosimulator.pcm.dataprocessing.analysis.executor.workflow.query.QueryInformation;
 import org.palladiosimulator.pcm.dataprocessing.analysis.executor.workflow.query.impl.IQueryManager;
-import org.palladiosimulator.pcm.dataprocessing.analysis.executor.workflow.workflow.AnalysisWorkflow;
 import org.palladiosimulator.pcm.dataprocessing.analysis.executor.workflow.workflow.AnalysisWorkflowConfig;
 import org.prolog4j.IProverFactory;
 import org.prolog4j.ProverInformation;
 import org.prolog4j.manager.IProverManager;
-
 import edu.kit.ipd.sdq.dataflow.systemmodel.SystemTranslator;
 
 /**
@@ -57,14 +50,15 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 		boolean shortAssign = configuration.getAttribute(Constants.ADV_SHORT_ASSIGN.getConstant(), false);
 
 		resolvePaths(configuration);
-
+		IProverFactory proverFactory =  getProverFactory(configuration);
+		IQuery analysisGoal = getAnalysisGoal(configuration);
 		AnalysisWorkflowConfig wfeConfig = new AnalysisWorkflowConfig(usageModelPath, allocModelPath, chModelPath,
-				getAnalysisGoal(configuration), getProverFactory(configuration), returnValueIndexing, optimNegation,
+				analysisGoal, proverFactory, returnValueIndexing, optimNegation,
 				shortAssign);
-//FIXME
-		AnalysisWorkflow analysisWorkflow = new AnalysisWorkflow(wfeConfig, null);
-
-		analysisWorkflow.launch();
+		WorkflowExecuter wfeExec = new WorkflowExecuter(wfeConfig);
+		wfeExec.execute();
+		//AnalysisWorkflow analysisWorkflow = new AnalysisWorkflow(wfeConfig, null);
+		//analysisWorkflow.launch();
 
 	}
 
@@ -158,15 +152,5 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 
 	}
 
-	private MessageConsole findConsole(String name) {
-		ConsolePlugin plugin = ConsolePlugin.getDefault();
-		IConsoleManager conMan = plugin.getConsoleManager();
-		for (org.eclipse.ui.console.IConsole console1 : conMan.getConsoles())
-			if (name.equals(console1.getName()))
-				return (MessageConsole) console1;
-		// no console found, so create a new one
-		MessageConsole myConsole = new MessageConsole(name, null);
-		conMan.addConsoles(new org.eclipse.ui.console.IConsole[] { myConsole });
-		return myConsole;
-	}
+	
 }
