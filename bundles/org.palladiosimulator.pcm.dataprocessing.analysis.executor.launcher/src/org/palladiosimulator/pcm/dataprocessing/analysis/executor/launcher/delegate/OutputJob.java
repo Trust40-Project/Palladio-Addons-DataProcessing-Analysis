@@ -1,5 +1,6 @@
 package org.palladiosimulator.pcm.dataprocessing.analysis.executor.launcher.delegate;
 
+import java.util.Objects;
 import java.util.Map.Entry;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -38,7 +39,7 @@ public class OutputJob implements IJob {
 			MessageConsoleStream out = myConsole.newMessageStream();
 
 			for (Entry<String, String> t : blackboard.getQuery().getResultVars().entrySet()) {
-				out.println(blackboard.getSolution().get(t.getValue()));
+				out.println(Objects.toString(blackboard.getSolution().get(t.getValue())));
 			}
 		}
 	}
