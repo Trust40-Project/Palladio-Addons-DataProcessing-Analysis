@@ -10,6 +10,14 @@ import java.util.Map;
 public interface IQuery {
 
 	/**
+	 * Gets an additional part of theory that is required by the query.
+	 * @return String of the additional Prolog Theory
+	 */
+	public default String getAdditionalTheory() {
+		return "";
+	}
+	
+	/**
 	 * Gets the attached query 
 	 * @return String of the Prolog Query
 	 */

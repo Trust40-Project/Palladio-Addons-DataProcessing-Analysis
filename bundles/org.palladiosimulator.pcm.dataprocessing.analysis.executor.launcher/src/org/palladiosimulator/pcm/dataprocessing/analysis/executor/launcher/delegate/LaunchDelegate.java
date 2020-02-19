@@ -3,6 +3,7 @@ package org.palladiosimulator.pcm.dataprocessing.analysis.executor.launcher.dele
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.Map;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -21,7 +22,6 @@ import org.palladiosimulator.pcm.dataprocessing.analysis.executor.workflow.workf
 import org.prolog4j.IProverFactory;
 import org.prolog4j.ProverInformation;
 import org.prolog4j.manager.IProverManager;
-import edu.kit.ipd.sdq.dataflow.systemmodel.SystemTranslator;
 
 /**
  * Launches a given launch configuration with an usage model,an allocation model
@@ -35,9 +35,6 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 	private URI usageModelPath = null;
 	private URI allocModelPath = null;
 	private URI chModelPath = null;
-
-	org.palladiosimulator.pcm.dataprocessing.prolog.prologmodel.System dataFlowSystemModel = null;
-	SystemTranslator sysTranslator = null;
 
 	@Override
 	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor)
