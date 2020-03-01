@@ -44,10 +44,10 @@ public class EvaluateModelJob extends SequentialBlackboardInteractingJob<Analysi
 		Query myQuery = myProver.query(blackboard.getQuery().getQueryString());
 		Solution<Object> solution = myQuery.solve();
 
-		if (solution.isSuccess()) {
+		//if (solution.isSuccess()) {
 			blackboard.setSolution(solution);
 
-		}
+		//}
 	}
 
 }

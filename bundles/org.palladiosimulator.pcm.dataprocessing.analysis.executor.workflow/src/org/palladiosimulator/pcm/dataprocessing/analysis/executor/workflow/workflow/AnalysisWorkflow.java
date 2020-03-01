@@ -60,10 +60,6 @@ public class AnalysisWorkflow extends SequentialBlackboardInteractingJob<Analysi
 		if (usageLocation.getModelID() != null && allocLocation.getModelID() != null
 				&& characLocation.getModelID() != null) {
 
-			// TODO set up a basic logging configuration?
-			// BasicConfigurator.resetConfiguration();
-			// BasicConfigurator.configure(new ConsoleAppender(new PatternLayout("%m%n")));
-
 			// initialise blackboard
 			if (this.getBlackboard() == null) {
 				this.setBlackboard(new AnalysisBlackboard());

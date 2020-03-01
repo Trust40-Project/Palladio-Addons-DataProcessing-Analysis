@@ -14,6 +14,8 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -79,11 +81,6 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 				&& isURIexistent(usageText.getText()) && isURIexistent(allocText.getText())
 				&& isURIexistent(chText.getText());
 
-	}
-
-	@Override
-	public boolean canSave() {
-		return true; // Saving always possible
 	}
 
 	@Override
@@ -171,16 +168,20 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 	@Override
 	public void createControl(Composite parent) {
 
+		/* Modify listener for text input changes, sets dirty */
 		final ModifyListener modifyListener = new ModifyListener() {
 
 			public void modifyText(ModifyEvent e) {
-				//ignored
+				setDirty(true);
+				updateLaunchConfigurationDialog();
 			}
+
 		};
 
 		comp = new Composite(parent, SWT.NONE);
-		comp.setLayout(new GridLayout(1, false));
-
+		GridLayout layout = new GridLayout();
+		comp.setLayout(layout);
+		setControl(comp);
 		/* Usage Model */
 
 		usageText = new Text(comp, SWT.BORDER);
@@ -202,12 +203,29 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 		TabHelper.createFileInputSection(comp, modifyListener, Constants.CHARACTERISTICS_MODEL_LABEL.getConstant(),
 				new String[] { "*.xmi" }, chText, Display.getCurrent().getActiveShell(), "");
 
+		/* Selection Listener for Combo boxes, sets dirty */
+
+		final SelectionListener selectionListener = new SelectionListener() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				setDirty(true);
+				updateLaunchConfigurationDialog();
+			}
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+		};
 		/* Analysis Goal */
 
 		analysisGroup = new Group(comp, SWT.NONE);
 		analysisGroup.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		analysisGroup.setText(Constants.ANALYSIS_GOAL_LABEL.getConstant());
-		analysisGroup.setLayout(new GridLayout(1, true));
+		analysisGroup.setLayout(layout);
 
 		analysisCombo = new Combo(analysisGroup, SWT.DROP_DOWN);
 
@@ -218,6 +236,7 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 		}
 
 		analysisCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		analysisCombo.addSelectionListener(selectionListener);
 		analysisCombo.clearSelection();
 
 		/* Prolog Interpreter */
@@ -225,7 +244,7 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 		prologGroup = new Group(comp, SWT.NONE);
 		prologGroup.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		prologGroup.setText(Constants.PROLOG_INTERPRETER_LABEL.getConstant());
-		prologGroup.setLayout(new GridLayout(1, true));
+		prologGroup.setLayout(layout);
 
 		prologCombo = new Combo(prologGroup, SWT.DROP_DOWN);
 
@@ -236,7 +255,8 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 		}
 
 		prologCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		setControl(comp);
+		prologCombo.addSelectionListener(selectionListener);
+		// setControl(comp);
 
 	}
 

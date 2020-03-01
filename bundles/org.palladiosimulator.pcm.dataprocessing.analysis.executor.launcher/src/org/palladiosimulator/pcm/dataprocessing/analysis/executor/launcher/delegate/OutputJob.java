@@ -37,9 +37,15 @@ public class OutputJob implements IJob {
 
 			MessageConsole myConsole = findConsole(Constants.CONSOLE_ID.getConstant());
 			MessageConsoleStream out = myConsole.newMessageStream();
+			if (blackboard.getSolution().isSuccess()) {
+				for (Entry<String, String> t : blackboard.getQuery().getResultVars().entrySet()) {
 
-			for (Entry<String, String> t : blackboard.getQuery().getResultVars().entrySet()) {
-				out.println(Objects.toString(blackboard.getSolution().get(t.getValue())));
+					out.print(t.getKey().toString() + " ; ");
+					out.println(Objects.toString(blackboard.getSolution().get(t.getValue())));
+
+				}
+			} else {
+				out.println("Solution has not succeeded");
 			}
 		}
 	}
