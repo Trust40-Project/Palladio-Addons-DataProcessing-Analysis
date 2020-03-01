@@ -15,6 +15,9 @@ import de.uka.ipd.sdq.workflow.jobs.SequentialBlackboardInteractingJob;
 import de.uka.ipd.sdq.workflow.jobs.UserCanceledException;
 
 /**
+ * Evaluates the SystemModel stored in the given blackboard with the given
+ * query.
+ * 
  * @author Mirko Sowa
  *
  */
@@ -44,10 +47,7 @@ public class EvaluateModelJob extends SequentialBlackboardInteractingJob<Analysi
 		Query myQuery = myProver.query(blackboard.getQuery().getQueryString());
 		Solution<Object> solution = myQuery.solve();
 
-		//if (solution.isSuccess()) {
-			blackboard.setSolution(solution);
-
-		//}
+		blackboard.setSolution(solution);
 	}
 
 }

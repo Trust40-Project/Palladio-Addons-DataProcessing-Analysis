@@ -47,15 +47,12 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 		boolean shortAssign = configuration.getAttribute(Constants.ADV_SHORT_ASSIGN.getConstant(), false);
 
 		resolvePaths(configuration);
-		IProverFactory proverFactory =  getProverFactory(configuration);
+		IProverFactory proverFactory = getProverFactory(configuration);
 		IQuery analysisGoal = getAnalysisGoal(configuration);
 		AnalysisWorkflowConfig wfeConfig = new AnalysisWorkflowConfig(usageModelPath, allocModelPath, chModelPath,
-				analysisGoal, proverFactory, returnValueIndexing, optimNegation,
-				shortAssign);
+				analysisGoal, proverFactory, returnValueIndexing, optimNegation, shortAssign);
 		WorkflowExecuter wfeExec = new WorkflowExecuter(wfeConfig);
 		wfeExec.execute();
-		//AnalysisWorkflow analysisWorkflow = new AnalysisWorkflow(wfeConfig, null);
-		//analysisWorkflow.launch();
 
 	}
 
@@ -149,5 +146,4 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 
 	}
 
-	
 }

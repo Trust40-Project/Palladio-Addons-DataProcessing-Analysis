@@ -13,6 +13,8 @@ import de.uka.ipd.sdq.workflow.jobs.UserCanceledException;
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.ModelLocation;
 
 /**
+ * Gets the SystemMode from the usageModel , allocationModel and
+ * CharacteristicsType.
  * 
  * @author mirko
  *

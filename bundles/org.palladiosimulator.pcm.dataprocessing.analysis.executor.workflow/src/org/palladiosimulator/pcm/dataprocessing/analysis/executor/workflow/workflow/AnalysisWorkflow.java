@@ -32,10 +32,6 @@ public class AnalysisWorkflow extends SequentialBlackboardInteractingJob<Analysi
 	private final IQuery analysisGoal;
 	private final IProverFactory proverFactory;
 
-	private IProgressMonitor myMonitor;
-
-	//private static final String RESOURCE_ID = "resID";
-
 	/**
 	 * Constructor for an AnalysisWorkflow, takes an AnalysisWorkflowConfig and a
 	 * IProgressMonitor as parameter. Also set the blackboard.

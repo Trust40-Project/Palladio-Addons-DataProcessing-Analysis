@@ -14,11 +14,11 @@ import org.eclipse.debug.ui.ILaunchConfigurationTab;
 public class LaunchConfigurationTabGroup extends AbstractLaunchConfigurationTabGroup {
 
 	/**
-	 * Opens to tabs, configurationTab (Main Tab) and a common tab.
+	 * Opens to tabs, {@link ModelInputTab} (the main tab) and a {@link TranslatorSettingsTab}
 	 */
 	@Override
 	public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
-		setTabs(new ILaunchConfigurationTab[] { new ConfigurationTab(), new AdvancedConfigurationTab() });
+		setTabs(new ILaunchConfigurationTab[] { new ModelInputTab(), new TranslatorSettingsTab() });
 
 	}
 

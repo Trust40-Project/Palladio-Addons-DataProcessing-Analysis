@@ -38,7 +38,7 @@ import de.uka.ipd.sdq.workflow.launchconfig.tabs.TabHelper;
  * @author Mirko Sowa
  *
  */
-public class ConfigurationTab extends AbstractLaunchConfigurationTab {
+public class ModelInputTab extends AbstractLaunchConfigurationTab {
 
 	private Composite comp;
 
@@ -55,7 +55,7 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 	private Map<ProverInformation, IProverFactory> proversMap;
 	private Map<QueryInformation, IQuery> queryMap;
 
-	public ConfigurationTab() {
+	public ModelInputTab() {
 		Activator sharedInstance = Activator.getInstance();
 		if (sharedInstance != null) {
 			proversMap = sharedInstance.getProverManagerInstance().getProvers();
@@ -182,6 +182,7 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 		GridLayout layout = new GridLayout();
 		comp.setLayout(layout);
 		setControl(comp);
+		
 		/* Usage Model */
 
 		usageText = new Text(comp, SWT.BORDER);
@@ -256,10 +257,12 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 
 		prologCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		prologCombo.addSelectionListener(selectionListener);
-		// setControl(comp);
-
 	}
-
+	/**
+	 * Checks if a given URI is existent in the file system
+	 * @param s String of the URI
+	 * @return true if URI exists, else false.
+	 */
 	private boolean isURIexistent(String s) {
 		URIConverter uriConverter = new ResourceSetImpl().getURIConverter();
 		URI uriFromText = URI.createURI(usageText.getText());

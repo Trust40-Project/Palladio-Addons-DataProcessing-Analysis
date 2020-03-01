@@ -134,7 +134,7 @@ public class AnalysisWorkflowConfig {
 
 	}
 
-	// package-private getters
+	/* package-private getters */
 
 	ModelLocation getUsageLocation() {
 		return usageLocation;

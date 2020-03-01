@@ -66,7 +66,7 @@ public class OutputJob implements IJob {
 		for (org.eclipse.ui.console.IConsole console1 : conMan.getConsoles())
 			if (name.equals(console1.getName()))
 				return (MessageConsole) console1;
-		// no console found, so create a new one
+		/* no console found, so create a new one */
 		MessageConsole myConsole = new MessageConsole(name, null);
 		conMan.addConsoles(new org.eclipse.ui.console.IConsole[] { myConsole });
 		return myConsole;

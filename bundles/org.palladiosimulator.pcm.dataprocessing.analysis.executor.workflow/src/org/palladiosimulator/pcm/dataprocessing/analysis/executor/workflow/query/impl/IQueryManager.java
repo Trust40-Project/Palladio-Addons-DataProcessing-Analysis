@@ -6,7 +6,7 @@ import org.palladiosimulator.pcm.dataprocessing.analysis.executor.workflow.query
 import org.palladiosimulator.pcm.dataprocessing.analysis.executor.workflow.query.QueryInformation;
 
 /**
- * 
+ * Manages the {@link IQuery} with its corresponding {@link QueryInformation}
  * 
  * @author Mirko Sowa
  *
