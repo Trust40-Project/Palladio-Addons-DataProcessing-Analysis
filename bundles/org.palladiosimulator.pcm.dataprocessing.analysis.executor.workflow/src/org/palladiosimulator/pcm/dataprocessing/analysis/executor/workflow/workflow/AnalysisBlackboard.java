@@ -1,5 +1,8 @@
 package org.palladiosimulator.pcm.dataprocessing.analysis.executor.workflow.workflow;
 
+import java.util.Collections;
+import java.util.Map;
+
 import org.palladiosimulator.pcm.dataprocessing.analysis.executor.workflow.query.IQuery;
 import org.palladiosimulator.pcm.dataprocessing.prolog.prologmodel.System;
 import org.prolog4j.IProverFactory;
@@ -23,6 +26,7 @@ public class AnalysisBlackboard extends MDSDBlackboard {
 	IProverFactory proverFactory = null;
 	IQuery query = null;
 	Solution<Object> solution = null;
+	Map<String, String> parameters = Collections.emptyMap();
 	/**
 	 * @return the dataFlowSystemModel
 	 */
@@ -35,6 +39,10 @@ public class AnalysisBlackboard extends MDSDBlackboard {
 	 */
 	public SystemTranslator getSystemTranslator() {
 		return systemTranslator;
+	}
+
+	public Map<String, String> getParameters() {
+		return parameters;
 	}
 
 	/**
@@ -94,6 +102,10 @@ public class AnalysisBlackboard extends MDSDBlackboard {
 	 */
 	public void setSolution(Solution<Object> solution) {
 		this.solution = solution;
+	}
+
+	public void setParameters(Map<String, String> parameters) {
+		this.parameters = parameters;
 	}
 
 }

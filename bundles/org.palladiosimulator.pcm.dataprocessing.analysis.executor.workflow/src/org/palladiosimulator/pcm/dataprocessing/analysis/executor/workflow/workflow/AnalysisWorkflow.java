@@ -1,5 +1,7 @@
 package org.palladiosimulator.pcm.dataprocessing.analysis.executor.workflow.workflow;
 
+import java.util.Map;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.palladiosimulator.pcm.dataprocessing.analysis.executor.workflow.query.IQuery;
 import org.palladiosimulator.pcm.dataprocessing.analysis.executor.workflow.workflow.job.EvaluateModelJob;
@@ -32,6 +34,8 @@ public class AnalysisWorkflow extends SequentialBlackboardInteractingJob<Analysi
 	private final IQuery analysisGoal;
 	private final IProverFactory proverFactory;
 
+	private final Map<String, String> parameters;
+
 	/**
 	 * Constructor for an AnalysisWorkflow, takes an AnalysisWorkflowConfig and a
 	 * IProgressMonitor as parameter. Also set the blackboard.
@@ -49,6 +53,7 @@ public class AnalysisWorkflow extends SequentialBlackboardInteractingJob<Analysi
 		this.sysTrans = config.getSysTrans();
 		this.analysisGoal = config.getQuery();
 		this.proverFactory = config.getProverFactory();
+		this.parameters = config.getParameters();
 	}
 
 	@Override
@@ -87,6 +92,7 @@ public class AnalysisWorkflow extends SequentialBlackboardInteractingJob<Analysi
 		myBlackboard.setQuery(analysisGoal);
 		myBlackboard.setProverFactory(proverFactory);
 		myBlackboard.setSystemTranslator(sysTrans);
+		myBlackboard.setParameters(parameters);
 	}
 
 	/**

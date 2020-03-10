@@ -3,6 +3,7 @@ package org.palladiosimulator.pcm.dataprocessing.analysis.executor.launcher.ui;
 import java.io.File;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -39,7 +40,9 @@ import de.uka.ipd.sdq.workflow.launchconfig.tabs.TabHelper;
  *
  */
 public class ModelInputTab extends AbstractLaunchConfigurationTab {
-
+	
+	private final InitTaskExecutor initTaskExecutor = new InitTaskExecutor();
+	
 	private Composite comp;
 
 	private Text usageText;
@@ -55,14 +58,17 @@ public class ModelInputTab extends AbstractLaunchConfigurationTab {
 	private Map<ProverInformation, IProverFactory> proversMap;
 	private Map<QueryInformation, IQuery> queryMap;
 
-	public ModelInputTab() {
+	private final QueryChangeSubject querySubject;
+
+	public ModelInputTab(QueryChangeSubject querySubject) {
+		this.querySubject = querySubject;
 		Activator sharedInstance = Activator.getInstance();
 		if (sharedInstance != null) {
 			proversMap = sharedInstance.getProverManagerInstance().getProvers();
 			queryMap = sharedInstance.getQueryManagerInstance().getQueries();
 		}
 	}
-
+	
 	@Override
 	public String getName() {
 		return Constants.NAME.getConstant();
@@ -75,68 +81,93 @@ public class ModelInputTab extends AbstractLaunchConfigurationTab {
 
 	@Override
 	public boolean isValid(final ILaunchConfiguration launchConfig) {
-
 		return !usageText.getText().isEmpty() && !allocText.getText().isEmpty() && !chText.getText().isEmpty()
 				&& analysisCombo.getSelectionIndex() != -1 && prologCombo.getSelectionIndex() != -1
 				&& isURIexistent(usageText.getText()) && isURIexistent(allocText.getText())
 				&& isURIexistent(chText.getText());
-
 	}
 
 	@Override
 	public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
-		configuration.setAttribute(Constants.USAGE_MODEL_LABEL.getConstant(), "");
-		configuration.setAttribute(Constants.ALLOCATION_MODEL_LABEL.getConstant(), "");
-		configuration.setAttribute(Constants.CHARACTERISTICS_MODEL_LABEL.getConstant(), "");
-		configuration.setAttribute(Constants.ANALYSIS_GOAL_LABEL.getConstant(),
-				Constants.DEFAULT_CONFIG_VALUE.getConstant()); // Saving id of
-																// QueryInformation
-		configuration.setAttribute(Constants.PROLOG_INTERPRETER_LABEL.getConstant(),
-				Constants.DEFAULT_CONFIG_VALUE.getConstant()); // Saving the ID of the
-		// ProverInformation
+		initTaskExecutor.runInitTask(() -> {
+			configuration.setAttribute(Constants.USAGE_MODEL_LABEL.getConstant(), "");
+			configuration.setAttribute(Constants.ALLOCATION_MODEL_LABEL.getConstant(), "");
+			configuration.setAttribute(Constants.CHARACTERISTICS_MODEL_LABEL.getConstant(), "");
+			configuration.setAttribute(Constants.ANALYSIS_GOAL_LABEL.getConstant(),
+					Constants.DEFAULT_CONFIG_VALUE.getConstant()); // Saving id of
+																	// QueryInformation
+			configuration.setAttribute(Constants.PROLOG_INTERPRETER_LABEL.getConstant(),
+					Constants.DEFAULT_CONFIG_VALUE.getConstant()); // Saving the ID of the
+			// ProverInformation
+		});
 	}
 
 	@Override
 	public void initializeFrom(ILaunchConfiguration configuration) {
-		usageText.setText("");
-		allocText.setText("");
-		chText.setText("");
-		analysisCombo.select(0);
-		prologCombo.select(0);
-
-		try {
-			usageText.setText(configuration.getAttribute(Constants.USAGE_MODEL_LABEL.getConstant(), ""));
-			allocText.setText(configuration.getAttribute(Constants.ALLOCATION_MODEL_LABEL.getConstant(), ""));
-			chText.setText(configuration.getAttribute(Constants.CHARACTERISTICS_MODEL_LABEL.getConstant(), ""));
-
-			String analysisConfig = configuration.getAttribute(Constants.ANALYSIS_GOAL_LABEL.getConstant(),
-					Constants.DEFAULT_CONFIG_VALUE.getConstant());
-
-			if (!analysisConfig.equals(Constants.DEFAULT_CONFIG_VALUE.getConstant())) {
-				for (Entry<QueryInformation, IQuery> entry : queryMap.entrySet()) {
-					if ((entry.getKey().getId()).equals(analysisConfig)) {
-						analysisCombo.select(analysisCombo.indexOf(entry.getKey().getName()));
+		initTaskExecutor.runInitTask(() -> {
+			usageText.setText("");
+			allocText.setText("");
+			chText.setText("");
+			analysisCombo.select(0);
+			prologCombo.select(0);
+	
+			try {
+				usageText.setText(configuration.getAttribute(Constants.USAGE_MODEL_LABEL.getConstant(), ""));
+				allocText.setText(configuration.getAttribute(Constants.ALLOCATION_MODEL_LABEL.getConstant(), ""));
+				chText.setText(configuration.getAttribute(Constants.CHARACTERISTICS_MODEL_LABEL.getConstant(), ""));
+	
+				String analysisConfig = configuration.getAttribute(Constants.ANALYSIS_GOAL_LABEL.getConstant(),
+						Constants.DEFAULT_CONFIG_VALUE.getConstant());
+	
+				if (!analysisConfig.equals(Constants.DEFAULT_CONFIG_VALUE.getConstant())) {
+					for (Entry<QueryInformation, IQuery> entry : queryMap.entrySet()) {
+						if ((entry.getKey().getId()).equals(analysisConfig)) {
+							analysisCombo.select(analysisCombo.indexOf(entry.getKey().getName()));
+						}
+						;
 					}
-					;
 				}
-			}
-
-			String prologCongfig = configuration.getAttribute(Constants.PROLOG_INTERPRETER_LABEL.getConstant(),
-					Constants.DEFAULT_CONFIG_VALUE.getConstant());
-
-			if (!prologCongfig.equals(Constants.DEFAULT_CONFIG_VALUE.getConstant())) {
-				for (Map.Entry<ProverInformation, IProverFactory> entry : proversMap.entrySet()) {
-					if ((entry.getKey().getId()).equals(prologCongfig)) {
-						prologCombo.select(prologCombo.indexOf(entry.getKey().getName()));
+	
+				String prologCongfig = configuration.getAttribute(Constants.PROLOG_INTERPRETER_LABEL.getConstant(),
+						Constants.DEFAULT_CONFIG_VALUE.getConstant());
+	
+				if (!prologCongfig.equals(Constants.DEFAULT_CONFIG_VALUE.getConstant())) {
+					for (Map.Entry<ProverInformation, IProverFactory> entry : proversMap.entrySet()) {
+						if ((entry.getKey().getId()).equals(prologCongfig)) {
+							prologCombo.select(prologCombo.indexOf(entry.getKey().getName()));
+						}
+						;
 					}
-					;
 				}
+	
+			} catch (CoreException e) {
+				// ignored
 			}
-
-		} catch (CoreException e) {
-			// ignored
+		});
+	}
+	
+	protected Optional<String> getQueryIdFromControl() {
+		String analysisName = "";
+		if (analysisCombo.getSelectionIndex() >= 0) {
+			analysisName = analysisCombo.getItem(analysisCombo.getSelectionIndex());
 		}
+		String analysisId = (String) analysisCombo.getData(analysisName);
 
+		for (Entry<QueryInformation, IQuery> entry : queryMap.entrySet()) {
+			if ((entry.getKey().getId()).equals(analysisId)) {
+				return Optional.of(entry.getKey().getId());
+			}
+		}
+		
+		return Optional.empty();
+	}
+	
+	protected Optional<IQuery> getQueryFromControl() {
+		Optional<String> queryId = getQueryIdFromControl();
+		if (!queryId.isPresent()) {
+			return Optional.empty();
+		}
+		return queryMap.keySet().stream().filter(qi -> qi.getId().equals(queryId.get())).findAny().map(queryMap::get);
 	}
 
 	@Override
@@ -145,14 +176,8 @@ public class ModelInputTab extends AbstractLaunchConfigurationTab {
 		configuration.setAttribute(Constants.ALLOCATION_MODEL_LABEL.getConstant(), allocText.getText());
 		configuration.setAttribute(Constants.CHARACTERISTICS_MODEL_LABEL.getConstant(), chText.getText());
 
-		String analysisName = analysisCombo.getItem(analysisCombo.getSelectionIndex());
-		String analysisId = (String) analysisCombo.getData(analysisName);
-
-		for (Entry<QueryInformation, IQuery> entry : queryMap.entrySet()) {
-			if ((entry.getKey().getId()).equals(analysisId)) {
-				configuration.setAttribute(Constants.ANALYSIS_GOAL_LABEL.getConstant(), entry.getKey().getId());
-			}
-		}
+		Optional<String> queryId = getQueryIdFromControl();
+		queryId.ifPresent(id -> configuration.setAttribute(Constants.ANALYSIS_GOAL_LABEL.getConstant(), id));
 
 		String prologName = prologCombo.getItem(prologCombo.getSelectionIndex());
 		String prologId = (String) prologCombo.getData(prologName);
@@ -172,8 +197,10 @@ public class ModelInputTab extends AbstractLaunchConfigurationTab {
 		final ModifyListener modifyListener = new ModifyListener() {
 
 			public void modifyText(ModifyEvent e) {
-				setDirty(true);
-				updateLaunchConfigurationDialog();
+				if (!initTaskExecutor.isInitTaskRunning()) {
+					setDirty(true);
+					updateLaunchConfigurationDialog();					
+				}
 			}
 
 		};
@@ -239,6 +266,12 @@ public class ModelInputTab extends AbstractLaunchConfigurationTab {
 		analysisCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		analysisCombo.addSelectionListener(selectionListener);
 		analysisCombo.clearSelection();
+		analysisCombo.addModifyListener(new ModifyListener() {
+			@Override
+			public void modifyText(ModifyEvent e) {
+				querySubject.notify(getQueryFromControl().orElse(null));
+			}
+		});
 
 		/* Prolog Interpreter */
 

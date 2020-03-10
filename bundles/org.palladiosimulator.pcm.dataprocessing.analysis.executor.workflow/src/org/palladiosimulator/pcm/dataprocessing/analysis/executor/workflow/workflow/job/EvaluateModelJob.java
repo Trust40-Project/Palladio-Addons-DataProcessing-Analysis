@@ -39,12 +39,12 @@ public class EvaluateModelJob extends SequentialBlackboardInteractingJob<Analysi
 	public void execute(IProgressMonitor monitor) throws JobFailedException, UserCanceledException {
 		System dataFlowSystem = blackboard.getDataFlowSystemModel();
 		String testingCode = blackboard.getSystemTranslator().translate(dataFlowSystem).getCode();
-
+		
 		Prover myProver = blackboard.getProverFactory().createProver();
 		myProver.addTheory(testingCode);
-		myProver.addTheory(blackboard.getQuery().getAdditionalTheory());
+		myProver.addTheory(blackboard.getQuery().getAdditionalTheory(blackboard.getParameters()));
 
-		Query myQuery = myProver.query(blackboard.getQuery().getQueryString());
+		Query myQuery = myProver.query(blackboard.getQuery().getQueryString(blackboard.getParameters()));
 		Solution<Object> solution = myQuery.solve();
 
 		blackboard.setSolution(solution);

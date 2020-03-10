@@ -6,6 +6,7 @@ package org.palladiosimulator.pcm.dataprocessing.analysis.executor.workflow.work
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
+import java.util.Map;
 
 import org.eclipse.emf.common.util.URI;
 import org.palladiosimulator.pcm.dataprocessing.analysis.executor.workflow.Activator;
@@ -27,6 +28,8 @@ import edu.kit.ipd.sdq.dataflow.systemmodel.configuration.Configuration;
  */
 public class AnalysisWorkflowConfig {
 
+	private static final String RESOURCE_ID = "resourceID";
+
 	private ModelLocation usageLocation = null;
 	private ModelLocation allocLocation = null;
 	private ModelLocation characLocation = null;
@@ -37,8 +40,7 @@ public class AnalysisWorkflowConfig {
 
 	private SystemTranslator sysTrans = null;
 
-	private static final String RESOURCE_ID = "resourceID";
-
+	private Map<String, String> parameters = Collections.emptyMap();
 
 	/**
 	 * Constructor for the {@link AnalysisWorkflowConfig}
@@ -58,16 +60,18 @@ public class AnalysisWorkflowConfig {
 	 *                            optional, default false
 	 * @param shortAssign         Boolean if short assignments should be used in
 	 *                            query, optional, default false
+	 * @param parameters          Map of all parameters to parameterize the query.
 	 * 
 	 * @throws IllegalArgumentException if one of the mandatory arguments is null
 	 */
 	public AnalysisWorkflowConfig(URI usageModelURI, URI allocModelURI, URI characModelURI, IQuery query,
-			IProverFactory proverFactory, boolean returnValueIndexing, boolean optimNegation, boolean shortAssign)
+			IProverFactory proverFactory, boolean returnValueIndexing, boolean optimNegation, boolean shortAssign, Map<String, String> parameters)
 			throws IllegalArgumentException {
 		if (usageModelURI != null && allocModelURI != null && characModelURI != null && query != null) {
 			this.usageLocation = new ModelLocation(RESOURCE_ID, usageModelURI);
 			this.allocLocation = new ModelLocation(RESOURCE_ID, allocModelURI);
 			this.characLocation = new ModelLocation(RESOURCE_ID, characModelURI);
+			this.parameters = parameters;
 			this.query = query;
 			this.setTranslator(returnValueIndexing, optimNegation, shortAssign);
 
@@ -81,14 +85,14 @@ public class AnalysisWorkflowConfig {
 		}
 	}
 
-	public AnalysisWorkflowConfig(URI usageModelURI, URI allocModelURI, URI characModelURI, IQuery query) {
-		this(usageModelURI, allocModelURI, characModelURI, query, null, false, false, false);
+	public AnalysisWorkflowConfig(URI usageModelURI, URI allocModelURI, URI characModelURI, IQuery query, Map<String, String> parameters) {
+		this(usageModelURI, allocModelURI, characModelURI, query, null, false, false, false, parameters);
 
 	}
 
 	public AnalysisWorkflowConfig(URI usageModelURI, URI allocModelURI, URI characModelURI, IQuery query,
-			IProverFactory proverFactory) {
-		this(usageModelURI, allocModelURI, characModelURI, query, proverFactory, false, false, false);
+			Map<String, String> parameters, IProverFactory proverFactory) {
+		this(usageModelURI, allocModelURI, characModelURI, query, proverFactory, false, false, false, parameters);
 
 	}
 
@@ -158,6 +162,10 @@ public class AnalysisWorkflowConfig {
 
 	SystemTranslator getSysTrans() {
 		return sysTrans;
+	}
+
+	Map<String, String> getParameters() {
+		return Collections.unmodifiableMap(parameters);
 	}
 
 }

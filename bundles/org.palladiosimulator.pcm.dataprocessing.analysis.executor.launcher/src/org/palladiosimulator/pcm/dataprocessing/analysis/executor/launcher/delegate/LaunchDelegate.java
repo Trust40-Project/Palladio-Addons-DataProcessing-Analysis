@@ -2,6 +2,7 @@ package org.palladiosimulator.pcm.dataprocessing.analysis.executor.launcher.dele
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
@@ -49,8 +50,14 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 		resolvePaths(configuration);
 		IProverFactory proverFactory = getProverFactory(configuration);
 		IQuery analysisGoal = getAnalysisGoal(configuration);
+		
+		Map<String, String> parameters = new HashMap<>();
+		for (String paramName : analysisGoal.getParameters().keySet()) {
+			parameters.put(paramName, configuration.getAttribute(paramName, ""));
+		}
+		
 		AnalysisWorkflowConfig wfeConfig = new AnalysisWorkflowConfig(usageModelPath, allocModelPath, chModelPath,
-				analysisGoal, proverFactory, returnValueIndexing, optimNegation, shortAssign);
+				analysisGoal, proverFactory, returnValueIndexing, optimNegation, shortAssign, parameters);
 		WorkflowExecuter wfeExec = new WorkflowExecuter(wfeConfig);
 		wfeExec.execute();
 
