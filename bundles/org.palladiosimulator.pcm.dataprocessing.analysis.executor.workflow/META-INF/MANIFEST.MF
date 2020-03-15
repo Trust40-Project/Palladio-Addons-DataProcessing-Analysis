@@ -7,9 +7,9 @@ Bundle-Activator: org.palladiosimulator.pcm.dataprocessing.analysis.executor.wor
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- de.uka.ipd.sdq.workflow,
+ de.uka.ipd.sdq.workflow;visibility:=reexport,
  org.palladiosimulator.pcm,
- de.uka.ipd.sdq.workflow.mdsd,
+ de.uka.ipd.sdq.workflow.mdsd;visibility:=reexport,
  org.palladiosimulator.pcm.dataprocessing,
  org.palladiosimulator.pcm.dataprocessing.analysis.transformation,
  org.palladiosimulator.pcm.dataprocessing.prolog.transformation,
