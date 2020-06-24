@@ -2,7 +2,7 @@ package org.palladiosimulator.pcm.dataprocessing.analysis.executor.workflow.quer
 
 public enum QueryParameterType {
 
-	MODEL_ID,
+	MODEL_ID_CHARACTERISTIC,
 	STRING
 	
 }

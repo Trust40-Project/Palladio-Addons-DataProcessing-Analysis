@@ -23,8 +23,8 @@ public abstract class RBACQuery implements IQuery {
 	
 	private static Map<String, QueryParameterType> createQueryParameters() {
 		Map<String, QueryParameterType> parameters = new HashMap<String, QueryParameterType>();
-		parameters.put(PARAM_ROLE, QueryParameterType.MODEL_ID);
-		parameters.put(PARAM_ACCESS, QueryParameterType.MODEL_ID);
+		parameters.put(PARAM_ROLE, QueryParameterType.MODEL_ID_CHARACTERISTIC);
+		parameters.put(PARAM_ACCESS, QueryParameterType.MODEL_ID_CHARACTERISTIC);
 		return Collections.unmodifiableMap(parameters);
 	}
 	
