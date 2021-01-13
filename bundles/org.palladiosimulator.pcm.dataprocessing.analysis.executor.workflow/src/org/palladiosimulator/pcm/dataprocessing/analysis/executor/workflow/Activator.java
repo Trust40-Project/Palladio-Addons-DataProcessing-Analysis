@@ -29,7 +29,7 @@ public class Activator extends AbstractUIPlugin {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		setInstance(instance);
+		setInstance(this);
 		ServiceReference<IProverManager> proverManagerReference = context.getServiceReference(IProverManager.class);
 		this.proverManager = context.getService(proverManagerReference);
 	}
